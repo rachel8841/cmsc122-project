@@ -25,7 +25,9 @@ def read_covid_data(variable_list):
     url = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv"
     df = pd.read_csv(url,index_col=0,parse_dates=[0])
 
-    interest = df[variable_list]
+    merged = df[variable_list]
+
+    return merged
 
 
 
