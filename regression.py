@@ -20,4 +20,8 @@ def get_model(var_list,y_var):
     X = stat.add_constant(X)
     model = stat.OLS(Y,X).fit()
 
-    return model.summary()
+    # not being used yet since we aren't doing t-tests
+    het_test = stat.stats.api.het_breuschpagan(model.resid,model.model.exog)
+    het = het_test[1] < 0.05
+
+    return model
