@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
 import datasets
-import sklearn as sk
-import statsmodels as stat
-import matplotlib.pyplot as plt
+import statsmodels.api as stat
+import statsmodels.formula.api as stat_f
 
 def get_model(var_list,y_var):
     '''
