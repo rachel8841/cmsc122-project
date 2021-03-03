@@ -147,7 +147,6 @@ def setup():
             value = 'NYC'
         ),
         html.Div(id='city-output-container'),
-        '''
         dcc.Dropdown(
             id = 'state_dropdown',
             options = [
@@ -156,18 +155,14 @@ def setup():
             ],
             value = 'NY'
         ),
-        html.Div(id='state-output-container'),
-        '''
         dcc.Graph(figure=fig)
     ])
     @app.callback(
         dash.dependencies.Output('city-output-container', 'children'),
-        #dash.dependencies.Output('state-output-container', 'children'),
-        [dash.dependencies.Input('city_dropdown', 'value')],
-        #[dash.dependencies.Input('state_dropdown', 'value2')],
+        [dash.dependencies.Input('city_dropdown', 'value'), dash.dependencies.Input('state_dropdown', 'value')]
         )
-    def update_output1(value):
-        return 'You have selected "{}"'.format(value)
+    def update_output(value1, value2):
+        return 'You have selected "{}"'.format(value1) + 'You have selected "{}"'.format(value2)
 
     if __name__ == '__main__':
         app.run_server(debug=True)
