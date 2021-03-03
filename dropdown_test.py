@@ -232,16 +232,19 @@ country_dict_list = [
                 {'label': 'Zambia', 'value': 'ZMB'},
                 {'label': 'Zimbabwe', 'value': 'ZWE'}
             ]
-def setup():
+def plot(var_list, countries):
+    '''
+    var_list: list of strings
+    var_list[0] is x variable
+    var_list[1] is y variable
+    var_list[2] is bubble size
+    '''
 
+    merged = dataframes.create_dataframes(var_list, countries)
+    col_list = [merged.columns[3], merged.columns[4], merged.columns[5]]
+    continents_df = pd.read_csv("data/continents.csv")
 
-    savings = pd.read_csv("data/savings.csv")
-    co2 = pd.read_csv("data/co2.csv")
-    drug_deaths = pd.read_csv("data/drug-deaths.csv")
-    continents = pd.read_csv("data/continents.csv")
-
-    merged = reduce(lambda left, right: pd.merge(left,right,on=['Code','Year', 'Entity']), [savings,co2, drug_deaths])
-    merged = reduce(lambda left, right: pd.merge(left,right,on=['Code', 'Entity']), [merged, continents])
+    merged = reduce(lambda left, right: pd.merge(left,right,on=['Code', 'Entity']), [merged, continents_df])
     years = list(set(merged['Year']))
     continents = list(set(merged["Continent"]))
 
@@ -253,8 +256,8 @@ def setup():
     }
 
     # fill in most of layout
-    fig_dict["layout"]["xaxis"] = {"title": "Savings"}
-    fig_dict["layout"]["yaxis"] = {"title": "CO2", "type": "log"}
+    fig_dict["layout"]["xaxis"] = {"title": col_list[0]}
+    fig_dict["layout"]["yaxis"] = {"title": col_list[1]}
     fig_dict["layout"]["hovermode"] = "closest"
     fig_dict["layout"]["updatemenus"] = [
         {
@@ -311,14 +314,14 @@ def setup():
             dataset_by_year["Continent"] == continent]
 
         data_dict = {
-            "x": list(dataset_by_year_and_cont["Adjusted net savings per capita (World Bank (2017))"]),
-            "y": list(dataset_by_year_and_cont["Annual CO2 emissions"]),
+            "x": list(dataset_by_year_and_cont[col_list[0]]),
+            "y": list(dataset_by_year_and_cont[col_list[1]]),
             "mode": "markers",
             "text": list(dataset_by_year_and_cont["Entity"]),
             "marker": {
                 "sizemode": "area",
                 "sizeref": 200000,
-                "size": list(dataset_by_year_and_cont["Deaths - Alcohol and substance use disorders"])
+                "size": list(dataset_by_year_and_cont[col_list[2]])
             },
             "name": continent
         }
@@ -333,14 +336,14 @@ def setup():
                 dataset_by_year["Continent"] == continent]
 
             data_dict = {
-                "x": list(dataset_by_year_and_cont["Adjusted net savings per capita (World Bank (2017))"]),
-                "y": list(dataset_by_year_and_cont["Annual CO2 emissions"]),
+                "x": list(dataset_by_year_and_cont[col_list[0]]),
+                "y": list(dataset_by_year_and_cont[col_list[1]]),
                 "mode": "markers",
                 "text": list(dataset_by_year_and_cont["Entity"]),
                 "marker": {
                     "sizemode": "area",
-                    "sizeref": 2*max(merged["Deaths - Alcohol and substance use disorders"]) / (50000),
-                    "size": list(dataset_by_year_and_cont["Deaths - Alcohol and substance use disorders"])
+                    "sizeref": 2*max(merged[col_list[2]]) / (50000),
+                    "size": list(dataset_by_year_and_cont[col_list[2]])
                 },
                 "name": continent
             }
@@ -361,6 +364,29 @@ def setup():
     fig_dict["layout"]["sliders"] = [sliders_dict]
     
     fig = go.Figure(fig_dict)
+    '''
+    fig.update_layout(
+        autosize=True,
+        width=1500,
+        height=800
+        '''
+        xaxis = dict(
+            tickmode = 'linear',
+            tick0 = merged[col_list[0]].min() - 100,
+            dtick = (merged[col_list[0]].max() - merged[col_list[0]].min())/20
+        ),
+        yaxis = dict(
+            tickmode = 'linear',
+            tick0 = merged[col_list[1]].min() - 100,
+            dtick = (merged[col_list[1]].max() - merged[col_list[1]].min())/20
+        ),
+        '''
+    )
+    '''
+
+    return fig
+
+def setup():
 
     app = dash.Dash()
     app.layout = html.Div([
@@ -379,23 +405,24 @@ def setup():
             options=variable_dict_list,
             value='co2'
         ),
-        html.Div(id='var-output-container'),
         dcc.Dropdown(
             id = 'country-dropdown',
             options=country_dict_list,
             value=top_twenty,
             multi=True
         ),
-        html.Div(id='dd-output-container'),  
-        dcc.Graph(figure=fig)
+        dcc.Graph(id='graph-court')
     ])
     @app.callback(
-        [dash.dependencies.Output('var-output-container', 'children'), dash.dependencies.Output('dd-output-container', 'children')],
+        dash.dependencies.Output('graph-court', 'figure'),
         [dash.dependencies.Input('xvar-dropdown', 'value'), dash.dependencies.Input('yvar-dropdown', 'value'), dash.dependencies.Input('bubblevar-dropdown', 'value'), dash.dependencies.Input('country-dropdown', 'value')]
         )
-    def update_output(xval, yval, bubval, countries):
-        return ('You have selected "{}"'.format(xval), 'You have selected "{}"'.format(countries))
 
+    def create_graph(xval, yval, bubval, countries):
+        var_list = [xval, yval, bubval]
+
+        fig = plot(var_list, countries)
+        return fig
 
     if __name__ == '__main__':
         app.run_server(debug=True)

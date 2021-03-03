@@ -1,20 +1,21 @@
 import pandas as pd
 from functools import reduce
 
-def create_dataframes(variable_list):
+def create_dataframes(variable_list, countries):
     '''
     variable_list (list): list of strings
-    optios for variables are: "broadband-subscriptions", "child-mortality", "co2", "dalys",
+    options for variables are: "broadband-subscriptions", "child-mortality", "co2", "dalys",
     "dependency", "drug-deaths", "expected-schooling", "female-labor", "fertility", "gov-expenditure",
     "happiness", "homicides", "life-expectancy", "pollution-deaths", "savings"]
     variable_list has a maximum of three variables
     '''
     df_list = []
     for var in variable_list:
-        csv_name = var + ".csv"
+        csv_name = "data/" + var + ".csv"
         df_list.append(pd.read_csv(csv_name))
 
     merged = reduce(lambda left, right: pd.merge(left,right,on=['Code','Year', 'Entity']), df_list)
+    merged = merged[merged["Code"].isin(countries)]
 
     return merged
 
