@@ -10,6 +10,15 @@ import dataframes
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
 top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", "ARE", "EGY"]
 
+custom_colors = {
+        'Asia': 'rgb(137, 182, 51)',
+        'Europe': 'rgb(249, 180, 15)',
+        'Africa': 'rgb(180, 15, 249)',
+        'South America': 'rgb(240, 107, 12)',
+        'North America': 'rgb(244, 12, 13)',
+        'Oceania': 'rgb(15, 84, 249)'
+    }
+
 codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW', 'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ', 'BEN', 'BTN', 'BOL', 'BIH', 'BWA', 'BRA', 'BRN', 'BGR', 'BFA', 'BDI', 'KHM', 'CMR', 'CAN', 'CPV', 'CAF', 'TCD', 'CHL', 'CHM', 'COL', 'COM', 'COG', 'COK', 'CRI', 'CIV', 'HRV', 'CUB', 'CUW', 'CYP', 'CZE', 'COD', 'DNK', 'DJI', 'DMA', 'DOM', 'ECU', 'EGY', 'SLV', 'GNQ', 'ERI', 'EST', 'SWZ', 'ETH', 'FJI', 'FIN', 'FRA', 'GUF', 'GAB', 'GMB', 'GEO', 'DEU', 'GHA', 'GRC', 'GRD', 'GUM', 'GTM', 'GIN', 'GNM', 'GUY', 'HTI', 'HND', 'HKG', 'HUN', 'ISL', 'IND', 'IDN', 'IRN', 'IRQ', 'IRL', 'ISR', 'ITA', 'JAM', 'JPN', 'JOR', 'KAZ', 'KEN', 'KIR', 'KWT', 'KGZ', 'LAO', 'LVA', 'LBN', 'LSO', 'LBR', 'LBY', 'LTU', 'LUX', 'MAC', 'MDG', 'MWI', 'MYS', 'MDV', 'MLI', 'MLT', 'MHL', 'MTQ', 'MRT', 'MUS', 'MYT', 'MEX', 'FSM', 'MDA', 'MCO', 'MNG', 'MNE', 'MAR', 'MOZ', 'MMR', 'NAM', 'NRU', 'NPL', 'NLD', 'NCL', 'NZL', 'NIC', 'NER', 'NGA', 'NIU', 'PRK', 'MKD', 'OMN', 'PAK', 'PLW', 'PSE', 'PAN', 'PNG', 'PRY', 'PER', 'PHL', 'POL', 'PRT', 'PRI', 'QAT', 'ROU', 'RUS', 'RWA', 'KNA', 'LCA', 'VCT', 'WSM', 'SMR', 'STP', 'SAU', 'SEN', 'SRB', 'SYC', 'SLE', 'SGP', 'SVK', 'SVN', 'SLB', 'SOM', 'ZAF', 'KOR', 'SSD', 'ESP', 'LKA', 'SDN', 'SUR', 'CHE', 'SYR', 'TJK', 'TZA', 'TJK', 'THA', 'TLS', 'TGO', 'TON', 'TTO', 'TUN', 'TUR', 'TKM', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UZB', 'VUT', 'VEN', 'VNM', 'YEM', 'ZMB', 'ZWE']
 
 variable_dict_list = [
@@ -345,7 +354,8 @@ def plot(var_list, countries):
                 "marker": {
                     "sizemode": "area",
                     "sizeref": 2*max(merged[col_list[2]]) / (25000),
-                    "size": list(dataset_by_year_and_cont[col_list[2]])
+                    "size": list(dataset_by_year_and_cont[col_list[2]]),
+                    "color": custom_colors[continent]
                 },
                 "name": continent
             }
@@ -372,9 +382,12 @@ def plot(var_list, countries):
         autosize=True,
         width=1500,
         height=800,
+        showlegend = True,
+        legend = {
+            'itemsizing': 'constant',
+            'traceorder': 'normal'
+        }
     )
-
-
     return fig
 
 def setup():
@@ -399,7 +412,7 @@ def setup():
         dcc.Dropdown(
             id = 'country-dropdown',
             options=country_dict_list,
-            value=codes,
+            value=top_twenty,
             multi=True
         ),
         dcc.Graph(id='graph-court')
