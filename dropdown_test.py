@@ -10,6 +10,8 @@ import dataframes
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
 top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", "ARE", "EGY"]
 
+codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW', 'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ', 'BEN', 'BTN', 'BOL', 'BIH', 'BWA', 'BRA', 'BRN', 'BGR', 'BFA', 'BDI', 'KHM', 'CMR', 'CAN', 'CPV', 'CAF', 'TCD', 'CHL', 'CHM', 'COL', 'COM', 'COG', 'COK', 'CRI', 'CIV', 'HRV', 'CUB', 'CUW', 'CYP', 'CZE', 'COD', 'DNK', 'DJI', 'DMA', 'DOM', 'ECU', 'EGY', 'SLV', 'GNQ', 'ERI', 'EST', 'SWZ', 'ETH', 'FJI', 'FIN', 'FRA', 'GUF', 'GAB', 'GMB', 'GEO', 'DEU', 'GHA', 'GRC', 'GRD', 'GUM', 'GTM', 'GIN', 'GNM', 'GUY', 'HTI', 'HND', 'HKG', 'HUN', 'ISL', 'IND', 'IDN', 'IRN', 'IRQ', 'IRL', 'ISR', 'ITA', 'JAM', 'JPN', 'JOR', 'KAZ', 'KEN', 'KIR', 'KWT', 'KGZ', 'LAO', 'LVA', 'LBN', 'LSO', 'LBR', 'LBY', 'LTU', 'LUX', 'MAC', 'MDG', 'MWI', 'MYS', 'MDV', 'MLI', 'MLT', 'MHL', 'MTQ', 'MRT', 'MUS', 'MYT', 'MEX', 'FSM', 'MDA', 'MCO', 'MNG', 'MNE', 'MAR', 'MOZ', 'MMR', 'NAM', 'NRU', 'NPL', 'NLD', 'NCL', 'NZL', 'NIC', 'NER', 'NGA', 'NIU', 'PRK', 'MKD', 'OMN', 'PAK', 'PLW', 'PSE', 'PAN', 'PNG', 'PRY', 'PER', 'PHL', 'POL', 'PRT', 'PRI', 'QAT', 'ROU', 'RUS', 'RWA', 'KNA', 'LCA', 'VCT', 'WSM', 'SMR', 'STP', 'SAU', 'SEN', 'SRB', 'SYC', 'SLE', 'SGP', 'SVK', 'SVN', 'SLB', 'SOM', 'ZAF', 'KOR', 'SSD', 'ESP', 'LKA', 'SDN', 'SUR', 'CHE', 'SYR', 'TJK', 'TZA', 'TJK', 'THA', 'TLS', 'TGO', 'TON', 'TTO', 'TUN', 'TUR', 'TKM', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UZB', 'VUT', 'VEN', 'VNM', 'YEM', 'ZMB', 'ZWE']
+
 variable_dict_list = [
                 {'label': 'Broadband Subscriptions', 'value': 'broadband-subscriptions'},
                 {'label': 'Child Mortality', 'value': 'child-mortality'},
@@ -342,7 +344,7 @@ def plot(var_list, countries):
                 "text": list(dataset_by_year_and_cont["Entity"]),
                 "marker": {
                     "sizemode": "area",
-                    "sizeref": 2*max(merged[col_list[2]]) / (50000),
+                    "sizeref": 2*max(merged[col_list[2]]) / (25000),
                     "size": list(dataset_by_year_and_cont[col_list[2]])
                 },
                 "name": continent
@@ -364,25 +366,14 @@ def plot(var_list, countries):
     fig_dict["layout"]["sliders"] = [sliders_dict]
     
     fig = go.Figure(fig_dict)
-    '''
+    fig.update_xaxes(range=[merged[col_list[0]].min() - .2*merged[col_list[0]].max(),merged[col_list[0]].max() + .2*merged[col_list[0]].max()])
+    fig.update_yaxes(range=[merged[col_list[1]].min() - .2*merged[col_list[1]].max(),merged[col_list[1]].max() + .2*merged[col_list[1]].max()])
     fig.update_layout(
         autosize=True,
         width=1500,
-        height=800
-        '''
-        xaxis = dict(
-            tickmode = 'linear',
-            tick0 = merged[col_list[0]].min() - 100,
-            dtick = (merged[col_list[0]].max() - merged[col_list[0]].min())/20
-        ),
-        yaxis = dict(
-            tickmode = 'linear',
-            tick0 = merged[col_list[1]].min() - 100,
-            dtick = (merged[col_list[1]].max() - merged[col_list[1]].min())/20
-        ),
-        '''
+        height=800,
     )
-    '''
+
 
     return fig
 
@@ -408,7 +399,7 @@ def setup():
         dcc.Dropdown(
             id = 'country-dropdown',
             options=country_dict_list,
-            value=top_twenty,
+            value=codes,
             multi=True
         ),
         dcc.Graph(id='graph-court')
