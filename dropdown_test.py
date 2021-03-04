@@ -22,22 +22,27 @@ custom_colors = {
 codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW', 'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ', 'BEN', 'BTN', 'BOL', 'BIH', 'BWA', 'BRA', 'BRN', 'BGR', 'BFA', 'BDI', 'KHM', 'CMR', 'CAN', 'CPV', 'CAF', 'TCD', 'CHL', 'CHM', 'COL', 'COM', 'COG', 'COK', 'CRI', 'CIV', 'HRV', 'CUB', 'CUW', 'CYP', 'CZE', 'COD', 'DNK', 'DJI', 'DMA', 'DOM', 'ECU', 'EGY', 'SLV', 'GNQ', 'ERI', 'EST', 'SWZ', 'ETH', 'FJI', 'FIN', 'FRA', 'GUF', 'GAB', 'GMB', 'GEO', 'DEU', 'GHA', 'GRC', 'GRD', 'GUM', 'GTM', 'GIN', 'GNM', 'GUY', 'HTI', 'HND', 'HKG', 'HUN', 'ISL', 'IND', 'IDN', 'IRN', 'IRQ', 'IRL', 'ISR', 'ITA', 'JAM', 'JPN', 'JOR', 'KAZ', 'KEN', 'KIR', 'KWT', 'KGZ', 'LAO', 'LVA', 'LBN', 'LSO', 'LBR', 'LBY', 'LTU', 'LUX', 'MAC', 'MDG', 'MWI', 'MYS', 'MDV', 'MLI', 'MLT', 'MHL', 'MTQ', 'MRT', 'MUS', 'MYT', 'MEX', 'FSM', 'MDA', 'MCO', 'MNG', 'MNE', 'MAR', 'MOZ', 'MMR', 'NAM', 'NRU', 'NPL', 'NLD', 'NCL', 'NZL', 'NIC', 'NER', 'NGA', 'NIU', 'PRK', 'MKD', 'OMN', 'PAK', 'PLW', 'PSE', 'PAN', 'PNG', 'PRY', 'PER', 'PHL', 'POL', 'PRT', 'PRI', 'QAT', 'ROU', 'RUS', 'RWA', 'KNA', 'LCA', 'VCT', 'WSM', 'SMR', 'STP', 'SAU', 'SEN', 'SRB', 'SYC', 'SLE', 'SGP', 'SVK', 'SVN', 'SLB', 'SOM', 'ZAF', 'KOR', 'SSD', 'ESP', 'LKA', 'SDN', 'SUR', 'CHE', 'SYR', 'TJK', 'TZA', 'TJK', 'THA', 'TLS', 'TGO', 'TON', 'TTO', 'TUN', 'TUR', 'TKM', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UZB', 'VUT', 'VEN', 'VNM', 'YEM', 'ZMB', 'ZWE']
 
 variable_dict_list = [
-                {'label': 'Broadband Subscriptions', 'value': 'broadband-subscriptions'},
+                {'label': 'Broadband Subscriptions', 'value': 'fixed-broadband-subscriptions-per-100-people'},
                 {'label': 'Child Mortality', 'value': 'child-mortality'},
-                {'label': 'CO2 Emissions', 'value': 'co2'},
-                {'label': 'Disability Adjusted Life Years', 'value': 'dalys'},
-                {'label': 'Age Dependency Ratio', 'value': 'dependency'},
-                {'label': 'Deaths from Drugs and Alcohol', 'value': 'drug-deaths'},
-                {'label': 'Years of Expected Schooling', 'value': 'expected-schooling'},
-                {'label': 'Female Labor Force Participation Rate', 'value': 'female-labor'},
-                {'label': 'Government Expenditure per Capita', 'value': 'gov-expenditure'},
-                {'label': 'Happiness', 'value': 'happiness'},
-                {'label': 'Homicides', 'value': 'homicides'},
+                {'label': 'CO2 Emissions', 'value': 'annual-co2-emissions-per-country'},
+                {'label': 'Disability Adjusted Life Years', 'value': 'dalys-rate-from-all-causes'},
+                {'label': 'Age Dependency Ratio', 'value': 'age-dependency-ratio-of-working-age-population'},
+                {'label': 'Deaths from Drugs and Alcohol', 'value': 'deaths-from-alcohol-and-drug-use-disorders'},
+                {'label': 'Years of Expected Schooling', 'value': 'expected-years-of-schooling'},
+                {'label': 'Female Labor Force Participation Rate', 'value': 'military-expenditure-as-share-of-gdp'},
+                {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
+                {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
+                {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
                 {'label': 'Life Expectancy', 'value': 'life-expectancy'},
-                {'label': 'Deaths from Pollution', 'value': 'pollution-deaths'},
-                {'label': 'Savings', 'value': 'savings'}
+                {'label': 'Savings', 'value': 'adjusted-net-savings-per-person'},
+                {'label': 'Inequality', 'value': 'economic-inequality-gini-index'},
+                {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
+                {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
+                {'label': 'Military Expenditure', 'value': 'military-expenditure-as-share-of-gdp'},
+                {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'}
             ]
 country_dict_list = [
+                {'label': 'All countries', 'value': 'ALL'},
                 {'label': 'Afghanistan', 'value': 'AFG'},
                 {'label': 'Albania', 'value': 'ALB'},
                 {'label': 'Algeria', 'value': 'DZA'},
@@ -243,6 +248,7 @@ country_dict_list = [
                 {'label': 'Zambia', 'value': 'ZMB'},
                 {'label': 'Zimbabwe', 'value': 'ZWE'}
             ]
+
 def plot(var_list, countries):
     '''
     var_list: list of strings
@@ -391,13 +397,14 @@ def plot(var_list, countries):
     return fig
 
 def setup():
+    external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-    app = dash.Dash()
+    app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
     app.layout = html.Div([
         dcc.Dropdown(
             id='xvar-dropdown',
             options=variable_dict_list,
-            value="broadband-subscriptions"
+            value='fixed-broadband-subscriptions-per-100-people'
         ),
         dcc.Dropdown(
             id='yvar-dropdown',
@@ -407,7 +414,7 @@ def setup():
         dcc.Dropdown(
             id='bubblevar-dropdown',
             options=variable_dict_list,
-            value='co2'
+            value='annual-co2-emissions-per-country'
         ),
         dcc.Dropdown(
             id = 'country-dropdown',
@@ -415,18 +422,23 @@ def setup():
             value=top_twenty,
             multi=True
         ),
-        dcc.Graph(id='graph-court')
+        html.H4("Description of variables:"),
+        html.Br(),
+        html.Div(id='description'),
+        dcc.Graph(id='graph-court'),
     ])
     @app.callback(
-        dash.dependencies.Output('graph-court', 'figure'),
+        [dash.dependencies.Output('graph-court', 'figure'), dash.dependencies.Output(component_id='description', component_property='children')],
         [dash.dependencies.Input('xvar-dropdown', 'value'), dash.dependencies.Input('yvar-dropdown', 'value'), dash.dependencies.Input('bubblevar-dropdown', 'value'), dash.dependencies.Input('country-dropdown', 'value')]
         )
 
     def create_graph(xval, yval, bubval, countries):
+        if 'ALL' in countries:
+            countries = codes
         var_list = [xval, yval, bubval]
 
         fig = plot(var_list, countries)
-        return fig
+        return (fig, "hello")
 
     if __name__ == '__main__':
         app.run_server(debug=True)
