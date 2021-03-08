@@ -8,7 +8,8 @@ import dash_html_components as html
 import dataframes
 
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
-top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", "ARE", "EGY"]
+top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", 
+    "ARE", "EGY"]
 
 custom_colors = {
         'Asia': 'rgb(137, 182, 51)',
@@ -19,28 +20,48 @@ custom_colors = {
         'Oceania': 'rgb(15, 84, 249)'
     }
 
-codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW', 'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ', 'BEN', 'BTN', 'BOL', 'BIH', 'BWA', 'BRA', 'BRN', 'BGR', 'BFA', 'BDI', 'KHM', 'CMR', 'CAN', 'CPV', 'CAF', 'TCD', 'CHL', 'CHM', 'COL', 'COM', 'COG', 'COK', 'CRI', 'CIV', 'HRV', 'CUB', 'CUW', 'CYP', 'CZE', 'COD', 'DNK', 'DJI', 'DMA', 'DOM', 'ECU', 'EGY', 'SLV', 'GNQ', 'ERI', 'EST', 'SWZ', 'ETH', 'FJI', 'FIN', 'FRA', 'GUF', 'GAB', 'GMB', 'GEO', 'DEU', 'GHA', 'GRC', 'GRD', 'GUM', 'GTM', 'GIN', 'GNM', 'GUY', 'HTI', 'HND', 'HKG', 'HUN', 'ISL', 'IND', 'IDN', 'IRN', 'IRQ', 'IRL', 'ISR', 'ITA', 'JAM', 'JPN', 'JOR', 'KAZ', 'KEN', 'KIR', 'KWT', 'KGZ', 'LAO', 'LVA', 'LBN', 'LSO', 'LBR', 'LBY', 'LTU', 'LUX', 'MAC', 'MDG', 'MWI', 'MYS', 'MDV', 'MLI', 'MLT', 'MHL', 'MTQ', 'MRT', 'MUS', 'MYT', 'MEX', 'FSM', 'MDA', 'MCO', 'MNG', 'MNE', 'MAR', 'MOZ', 'MMR', 'NAM', 'NRU', 'NPL', 'NLD', 'NCL', 'NZL', 'NIC', 'NER', 'NGA', 'NIU', 'PRK', 'MKD', 'OMN', 'PAK', 'PLW', 'PSE', 'PAN', 'PNG', 'PRY', 'PER', 'PHL', 'POL', 'PRT', 'PRI', 'QAT', 'ROU', 'RUS', 'RWA', 'KNA', 'LCA', 'VCT', 'WSM', 'SMR', 'STP', 'SAU', 'SEN', 'SRB', 'SYC', 'SLE', 'SGP', 'SVK', 'SVN', 'SLB', 'SOM', 'ZAF', 'KOR', 'SSD', 'ESP', 'LKA', 'SDN', 'SUR', 'CHE', 'SYR', 'TJK', 'TZA', 'TJK', 'THA', 'TLS', 'TGO', 'TON', 'TTO', 'TUN', 'TUR', 'TKM', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UZB', 'VUT', 'VEN', 'VNM', 'YEM', 'ZMB', 'ZWE']
+codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW',
+    'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ',
+    'BEN', 'BTN', 'BOL', 'BIH', 'BWA', 'BRA', 'BRN', 'BGR', 'BFA', 'BDI',
+    'KHM', 'CMR', 'CAN', 'CPV', 'CAF', 'TCD', 'CHL', 'CHM', 'COL', 'COM',
+    'COG', 'COK', 'CRI', 'CIV', 'HRV', 'CUB', 'CUW', 'CYP', 'CZE', 'COD',
+    'DNK', 'DJI', 'DMA', 'DOM', 'ECU', 'EGY', 'SLV', 'GNQ', 'ERI', 'EST',
+    'SWZ', 'ETH', 'FJI', 'FIN', 'FRA', 'GUF', 'GAB', 'GMB', 'GEO', 'DEU',
+    'GHA', 'GRC', 'GRD', 'GUM', 'GTM', 'GIN', 'GNM', 'GUY', 'HTI', 'HND',
+    'HKG', 'HUN', 'ISL', 'IND', 'IDN', 'IRN', 'IRQ', 'IRL', 'ISR', 'ITA',
+    'JAM', 'JPN', 'JOR', 'KAZ', 'KEN', 'KIR', 'KWT', 'KGZ', 'LAO', 'LVA',
+    'LBN', 'LSO', 'LBR', 'LBY', 'LTU', 'LUX', 'MAC', 'MDG', 'MWI', 'MYS',
+    'MDV', 'MLI', 'MLT', 'MHL', 'MTQ', 'MRT', 'MUS', 'MYT', 'MEX', 'FSM',
+    'MDA', 'MCO', 'MNG', 'MNE', 'MAR', 'MOZ', 'MMR', 'NAM', 'NRU', 'NPL',
+    'NLD', 'NCL', 'NZL', 'NIC', 'NER', 'NGA', 'NIU', 'PRK', 'MKD', 'OMN',
+    'PAK', 'PLW', 'PSE', 'PAN', 'PNG', 'PRY', 'PER', 'PHL', 'POL', 'PRT',
+    'PRI', 'QAT', 'ROU', 'RUS', 'RWA', 'KNA', 'LCA', 'VCT', 'WSM', 'SMR',
+    'STP', 'SAU', 'SEN', 'SRB', 'SYC', 'SLE', 'SGP', 'SVK', 'SVN', 'SLB',
+    'SOM', 'ZAF', 'KOR', 'SSD', 'ESP', 'LKA', 'SDN', 'SUR', 'CHE', 'SYR',
+    'TJK', 'TZA', 'TJK', 'THA', 'TLS', 'TGO', 'TON', 'TTO', 'TUN', 'TUR',
+    'TKM', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UZB', 'VUT', 'VEN',
+    'VNM', 'YEM', 'ZMB', 'ZWE']
 
 variable_dict_list = [
-                {'label': 'Broadband Subscriptions', 'value': 'fixed-broadband-subscriptions-per-100-people'},
-                {'label': 'Child Mortality', 'value': 'child-mortality'},
-                {'label': 'CO2 Emissions', 'value': 'annual-co2-emissions-per-country'},
-                {'label': 'Disability Adjusted Life Years', 'value': 'dalys-rate-from-all-causes'},
-                {'label': 'Age Dependency Ratio', 'value': 'age-dependency-ratio-of-working-age-population'},
-                {'label': 'Deaths from Drugs and Alcohol', 'value': 'deaths-from-alcohol-and-drug-use-disorders'},
-                {'label': 'Years of Expected Schooling', 'value': 'expected-years-of-schooling'},
-                {'label': 'Female Labor Force Participation Rate', 'value': 'military-expenditure-as-share-of-gdp'},
-                {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
-                {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
-                {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
-                {'label': 'Life Expectancy', 'value': 'life-expectancy'},
-                {'label': 'Savings', 'value': 'adjusted-net-savings-per-person'},
-                {'label': 'Inequality', 'value': 'economic-inequality-gini-index'},
-                {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
-                {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
-                {'label': 'Military Expenditure', 'value': 'military-expenditure-as-share-of-gdp'},
-                {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'}
-            ]
+    {'label': 'Broadband Subscriptions', 'value': 'fixed-broadband-subscriptions-per-100-people'},
+    {'label': 'Child Mortality', 'value': 'child-mortality'},
+    {'label': 'CO2 Emissions', 'value': 'annual-co2-emissions-per-country'},
+    {'label': 'Disability Adjusted Life Years', 'value': 'dalys-rate-from-all-causes'},
+    {'label': 'Age Dependency Ratio', 'value': 'age-dependency-ratio-of-working-age-population'},
+    {'label': 'Deaths from Drugs and Alcohol', 'value': 'deaths-from-alcohol-and-drug-use-disorders'},
+    {'label': 'Years of Expected Schooling', 'value': 'expected-years-of-schooling'},
+    {'label': 'Female Labor Force Participation Rate', 'value': 'military-expenditure-as-share-of-gdp'},
+    {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
+    {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
+    {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
+    {'label': 'Life Expectancy', 'value': 'life-expectancy'},
+    {'label': 'Savings', 'value': 'adjusted-net-savings-per-person'},
+    {'label': 'Inequality', 'value': 'economic-inequality-gini-index'},
+    {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
+    {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
+    {'label': 'Military Expenditure', 'value': 'military-expenditure-as-share-of-gdp'},
+    {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'}
+    ]
 country_dict_list = [
                 {'label': 'All countries', 'value': 'ALL'},
                 {'label': 'Afghanistan', 'value': 'AFG'},
@@ -258,6 +279,8 @@ def plot(var_list, countries):
     '''
 
     merged = dataframes.create_dataframes(var_list, countries)
+
+    #list of the names of the columns
     col_list = [merged.columns[3], merged.columns[4], merged.columns[5]]
     continents_df = pd.read_csv("data/continents.csv")
 
@@ -280,23 +303,21 @@ def plot(var_list, countries):
         {
             "buttons": [
                 {
-                    "args": [None, {"frame": {"duration": 500, "redraw": False},
+                    "args": [None, {"frame": {"duration": 500},
                                     "fromcurrent": True, "transition": {"duration": 300,
                                                                         "easing": "quadratic-in-out"}}],
                     "label": "Play",
                     "method": "animate"
                 },
                 {
-                    "args": [[None], {"frame": {"duration": 0, "redraw": False},
-                                    "mode": "immediate",
-                                    "transition": {"duration": 0}}],
+                    "args": [[None], {"frame": {"duration": 0},
+                                    "mode": "immediate"}],
                     "label": "Pause",
                     "method": "animate"
                 }
             ],
             "direction": "left",
             "pad": {"r": 10, "t": 87},
-            "showactive": False,
             "type": "buttons",
             "x": 0.1,
             "xanchor": "right",
@@ -323,7 +344,7 @@ def plot(var_list, countries):
         "steps": []
     }
 
-    # make data
+    #makes the first frame of data for the first year
     year = years[0]
     for continent in continents:
         dataset_by_year = merged[merged["Year"] == year]
@@ -337,14 +358,14 @@ def plot(var_list, countries):
             "text": list(dataset_by_year_and_cont["Entity"]),
             "marker": {
                 "sizemode": "area",
-                "sizeref": 200000,
+                "sizeref": 15000,
                 "size": list(dataset_by_year_and_cont[col_list[2]])
             },
             "name": continent
         }
         fig_dict["data"].append(data_dict)
 
-    # make frames
+    #makes the frames of the animation
     for year in years:
         frame = {"data": [], "name": str(year)}
         for continent in continents:
@@ -359,7 +380,7 @@ def plot(var_list, countries):
                 "text": list(dataset_by_year_and_cont["Entity"]),
                 "marker": {
                     "sizemode": "area",
-                    "sizeref": 2*max(merged[col_list[2]]) / (25000),
+                    "sizeref": 2*max(merged[col_list[2]]) / (15000),
                     "size": list(dataset_by_year_and_cont[col_list[2]]),
                     "color": custom_colors[continent]
                 },
@@ -370,7 +391,7 @@ def plot(var_list, countries):
         fig_dict["frames"].append(frame)
         slider_step = {"args": [
             [year],
-            {"frame": {"duration": 300, "redraw": False},
+            {"frame": {"duration": 300},
             "mode": "immediate",
             "transition": {"duration": 300}}
         ],
@@ -382,12 +403,20 @@ def plot(var_list, countries):
     fig_dict["layout"]["sliders"] = [sliders_dict]
     
     fig = go.Figure(fig_dict)
-    fig.update_xaxes(range=[merged[col_list[0]].min() - .2*merged[col_list[0]].max(),merged[col_list[0]].max() + .2*merged[col_list[0]].max()])
-    fig.update_yaxes(range=[merged[col_list[1]].min() - .2*merged[col_list[1]].max(),merged[col_list[1]].max() + .2*merged[col_list[1]].max()])
+
+    #rescales the axes to include the maximum and mininum values of the variables
+    fig.update_xaxes(range=[merged[col_list[0]].min() - 
+        .2*merged[col_list[0]].max(),
+        merged[col_list[0]].max() + .2*merged[col_list[0]].max()])
+    fig.update_yaxes(range=[merged[col_list[1]].min() - 
+        .2*merged[col_list[1]].max(),
+        merged[col_list[1]].max() + .2*merged[col_list[1]].max()])
+
+    #sets size of scatter plot
     fig.update_layout(
         autosize=True,
-        width=1500,
-        height=800,
+        width=1000,
+        height=600,
         showlegend = True,
         legend = {
             'itemsizing': 'constant',
@@ -400,6 +429,7 @@ def setup():
     external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
     app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
     app.layout = html.Div([
         dcc.Dropdown(
             id='xvar-dropdown',
@@ -428,10 +458,15 @@ def setup():
         dcc.Graph(id='graph-court'),
     ])
     @app.callback(
-        [dash.dependencies.Output('graph-court', 'figure'), dash.dependencies.Output(component_id='description', component_property='children')],
-        [dash.dependencies.Input('xvar-dropdown', 'value'), dash.dependencies.Input('yvar-dropdown', 'value'), dash.dependencies.Input('bubblevar-dropdown', 'value'), dash.dependencies.Input('country-dropdown', 'value')]
+        [dash.dependencies.Output('graph-court', 'figure'), 
+            dash.dependencies.Output(component_id='description', component_property='children')],
+        [dash.dependencies.Input('xvar-dropdown', 'value'), 
+            dash.dependencies.Input('yvar-dropdown', 'value'), 
+            dash.dependencies.Input('bubblevar-dropdown', 'value'), 
+            dash.dependencies.Input('country-dropdown', 'value')]
         )
-
+    
+    #creates graph based on the selections on the drop down menus
     def create_graph(xval, yval, bubval, countries):
         if 'ALL' in countries:
             countries = codes
