@@ -6,6 +6,8 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dataframes
+import webscraping
+import util
 
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
 top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", 
@@ -55,13 +57,38 @@ variable_dict_list = [
     {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
     {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
     {'label': 'Life Expectancy', 'value': 'life-expectancy'},
+    {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
+    {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
+    {'label': 'Military Expenditure', 'value': 'military-expenditure-as-share-of-gdp'},
+    {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'}
+]
+'''
+same as variable_dict_list, but excludes some variables that wouldn't make
+sense when represented as a marker bubble
+for example, savings (which sometimes has negative values) or military 
+expenditure as a % of gdp, since this doesn't vary much between countries
+'''
+bub_dict_list = [
+    {'label': 'Broadband Subscriptions', 'value': 'fixed-broadband-subscriptions-per-100-people'},
+    {'label': 'Child Mortality', 'value': 'child-mortality'},
+    {'label': 'CO2 Emissions', 'value': 'annual-co2-emissions-per-country'},
+    {'label': 'Disability Adjusted Life Years', 'value': 'dalys-rate-from-all-causes'},
+    {'label': 'Age Dependency Ratio', 'value': 'age-dependency-ratio-of-working-age-population'},
+    {'label': 'Deaths from Drugs and Alcohol', 'value': 'deaths-from-alcohol-and-drug-use-disorders'},
+    {'label': 'Years of Expected Schooling', 'value': 'expected-years-of-schooling'},
+    {'label': 'Female Labor Force Participation Rate', 'value': 'military-expenditure-as-share-of-gdp'},
+    {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
+    {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
+    {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
+    {'label': 'Life Expectancy', 'value': 'life-expectancy'},
     {'label': 'Savings', 'value': 'adjusted-net-savings-per-person'},
     {'label': 'Inequality', 'value': 'economic-inequality-gini-index'},
     {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
     {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
     {'label': 'Military Expenditure', 'value': 'military-expenditure-as-share-of-gdp'},
     {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'}
-    ]
+
+]
 country_dict_list = [
                 {'label': 'All countries', 'value': 'ALL'},
                 {'label': 'Afghanistan', 'value': 'AFG'},
@@ -423,7 +450,7 @@ def plot(var_list, countries):
             'traceorder': 'normal'
         }
     )
-    return fig
+    return fig, col_list
 
 def setup():
     external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -454,12 +481,18 @@ def setup():
         ),
         html.H4("Description of variables:"),
         html.Br(),
-        html.Div(id='description'),
+        html.Div(id='x-description'),
+        html.Br(),
+        html.Div(id='y-description'),
+        html.Br(),
+        html.Div(id='bub-description'),
         dcc.Graph(id='graph-court'),
     ])
     @app.callback(
         [dash.dependencies.Output('graph-court', 'figure'), 
-            dash.dependencies.Output(component_id='description', component_property='children')],
+            dash.dependencies.Output(component_id='x-description', component_property='children'),
+            dash.dependencies.Output(component_id='y-description', component_property='children'),
+            dash.dependencies.Output(component_id='bub-description', component_property='children')],
         [dash.dependencies.Input('xvar-dropdown', 'value'), 
             dash.dependencies.Input('yvar-dropdown', 'value'), 
             dash.dependencies.Input('bubblevar-dropdown', 'value'), 
@@ -472,8 +505,15 @@ def setup():
             countries = codes
         var_list = [xval, yval, bubval]
 
-        fig = plot(var_list, countries)
-        return (fig, "hello")
+        fig, col_list = plot(var_list, countries)
+        descriptions = webscraping.scrape(var_list)
+
+        label_names = [util.clean_column_name(item) for item in col_list]
+        x_desc = label_names[0] + ": " + descriptions[0]
+        y_desc = label_names[1] + ": " + descriptions[1]
+        bub_desc = label_names[2] + ": " + descriptions[2]
+
+        return (fig, x_desc, y_desc, bub_desc)
 
     if __name__ == '__main__':
         app.run_server(debug=True)
