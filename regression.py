@@ -3,10 +3,14 @@ import numpy as np
 import dataframes
 import statsmodels.api as stat
 import statsmodels.formula.api as stat_f
+
 import rpy2 # https://rpy2.github.io/doc/v2.9.x/html/introduction.html
-from rpy2.robjects.packages import importr # not sure about what to do w this?
+from rpy2.robjects.packages import importr # not sure if this is necessary?
 base = importr('base')
 utils = importr('utils')
+
+from rpy2.robjects import r, pandas2ri
+pandas2ri.activate()
 
 #import subprocess
 codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW', 'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ', 'BEN', 'BTN', 'BOL', 'BIH', 'BWA', 'BRA', 'BRN', 'BGR', 'BFA', 'BDI', 'KHM', 'CMR', 'CAN', 'CPV', 'CAF', 'TCD', 'CHL', 'CHM', 'COL', 'COM', 'COG', 'COK', 'CRI', 'CIV', 'HRV', 'CUB', 'CUW', 'CYP', 'CZE', 'COD', 'DNK', 'DJI', 'DMA', 'DOM', 'ECU', 'EGY', 'SLV', 'GNQ', 'ERI', 'EST', 'SWZ', 'ETH', 'FJI', 'FIN', 'FRA', 'GUF', 'GAB', 'GMB', 'GEO', 'DEU', 'GHA', 'GRC', 'GRD', 'GUM', 'GTM', 'GIN', 'GNM', 'GUY', 'HTI', 'HND', 'HKG', 'HUN', 'ISL', 'IND', 'IDN', 'IRN', 'IRQ', 'IRL', 'ISR', 'ITA', 'JAM', 'JPN', 'JOR', 'KAZ', 'KEN', 'KIR', 'KWT', 'KGZ', 'LAO', 'LVA', 'LBN', 'LSO', 'LBR', 'LBY', 'LTU', 'LUX', 'MAC', 'MDG', 'MWI', 'MYS', 'MDV', 'MLI', 'MLT', 'MHL', 'MTQ', 'MRT', 'MUS', 'MYT', 'MEX', 'FSM', 'MDA', 'MCO', 'MNG', 'MNE', 'MAR', 'MOZ', 'MMR', 'NAM', 'NRU', 'NPL', 'NLD', 'NCL', 'NZL', 'NIC', 'NER', 'NGA', 'NIU', 'PRK', 'MKD', 'OMN', 'PAK', 'PLW', 'PSE', 'PAN', 'PNG', 'PRY', 'PER', 'PHL', 'POL', 'PRT', 'PRI', 'QAT', 'ROU', 'RUS', 'RWA', 'KNA', 'LCA', 'VCT', 'WSM', 'SMR', 'STP', 'SAU', 'SEN', 'SRB', 'SYC', 'SLE', 'SGP', 'SVK', 'SVN', 'SLB', 'SOM', 'ZAF', 'KOR', 'SSD', 'ESP', 'LKA', 'SDN', 'SUR', 'CHE', 'SYR', 'TJK', 'TZA', 'TJK', 'THA', 'TLS', 'TGO', 'TON', 'TTO', 'TUN', 'TUR', 'TKM', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UZB', 'VUT', 'VEN', 'VNM', 'YEM', 'ZMB', 'ZWE']
@@ -14,19 +18,23 @@ codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW', '
 
 def use_r_code(x_var,y_var):
     '''
-    Does some kind of R code using the rpy2 library
+    Executes R code for running a linear regression (and other things) 
+    using the rpy2 library
     '''
     # blah rpy2 code - use the existing df and do regression (what else?)
     # i feel like we should try to do some fancier stuff than just regression
     # so that we can justify using rpy2 and being Ambitious
     
-    # see documentation for other ways to do things but could easily just do
+    # use this to convert relevant df so it's usable in R (need df as variable?)
+    r_df = pandas2ri.py2ri(df)
+    
+    # see documentation for other ways to do R code here but could just do
     regression = robjects.r('''
-        # write R code for getting a regression here (in a string)
-        # call the code, it will be output to variable regression!
+        # write R code for doing a regression here (in a string)
+        # call the code, it will be output to regression
         ''')
         
-    return result
+    return regression
     
     
 def get_model(x_var,y_var):
