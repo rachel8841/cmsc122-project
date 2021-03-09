@@ -89,7 +89,8 @@ def regression_in_R(x_var,y_var,control=None):
         y_var: the dependent variable, as a string
         control: a covariate to control for, as a string
 
-    Output: regression results from R as a string 
+    Output: dictionary of 'Intercept', x_var, and control, each mapping to a
+    dictionary of 'Estimate', 'SEs', 't-value', and 'p-value' (ints) 
     '''
     data = make_dataframe(x_var,y_var,control)
 
@@ -115,7 +116,7 @@ def regression_in_R(x_var,y_var,control=None):
     sum = do_reg(py_df,(ncol(py_df)>2))
     as.character(sum$coefficients)
     '''
-    output = list(robjects.r(r_call))
+    output = [float(x) for x in list(robjects.r(r_call))]
 
     reg_results = {}
     reg_results["Intercept"] = {}
