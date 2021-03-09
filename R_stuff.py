@@ -12,7 +12,9 @@ base = rpackages.importr('base')
 utils = rpackages.importr('utils')
 utils.chooseCRANmirror(ind=1)
 utils.install_packages('lmtest')
+rpackages.importr('lmtest')
 utils.install_packages('RCurl')
+rpackages.importr('RCurl')
 pandas2ri.activate()
 
 # list of country codes
@@ -39,7 +41,6 @@ codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW',
 # add summary() function with robust SEs to R session from
 # economictheoryblog.com/2016/08/07/robust-standard-errors-in-r-function/
 robjects.r('''
-library(RCurl)
 url_robust = "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
 eval(parse(text=getURL(url_robust,ssl.verifypeer=FALSE)),envir=.GlobalEnv)
 ''')
@@ -94,28 +95,53 @@ def regression_in_R(x_var,y_var,control=None):
 
     with localconverter(robjects.default_converter+pandas2ri.converter):
         r_df = robjects.conversion.py2rpy(data)
-
     robjects.globalenv['py_df'] = r_df
-    output = robjects.r('''
-    library(lmtest)
+    
+    r_call = '''
     do_reg = function(df,control=F){
-        if control{
+        if (control){
             model = lm(df[,3] ~ df[,1] + df[,2])
         } else{
             model = lm(df[,2] ~ df[,1])
         }
         test = bptest(model)
         p_val = unname(test$p.value)
-        if p_val > 0.10{
-            return summary(model)
+        if (p_val > 0.10){
+            return(summary(model))
         } else{
-            return summary(model,robust=T)
+            return(summary(model,robust=T))
         }
     }
-    do_reg(py_df,(ncol(py_df)>=3)
-    ''')
+    sum = do_reg(py_df,(ncol(py_df)>2))
+    as.character(sum$coefficients)
+    '''
+    output = list(robjects.r(r_call))
 
-    return output
+    reg_results = {}
+    reg_results["Intercept"] = {}
+    reg_results[x_var] = {}
+    if control is None:
+        reg_results["Intercept"]["Estimate"] = output[0]
+        reg_results[x_var]["Estimate"] = output[1]
+        reg_results["Intercept"]["SE"] = output[2]
+        reg_results[x_var]["SE"] = output[3]
+        reg_results["Intercept"]["t-value"] = output[4]
+        reg_results[x_var]["t-value"] = output[5]
+        reg_results["Intercept"]["p-value"] = output[6]
+        reg_results[x_var]["p-value"] = output[7]
+    else:
+        reg_results[control] = {}
+        reg_results["Intercept"]["Estimate"] = output[0]
+        reg_results[x_var]["Estimate"] = output[1]
+        reg_results[control]["Estimate"] = output[2]
+        reg_results["Intercept"]["SE"] = output[3]
+        reg_results[x_var]["SE"] = output[4]
+        reg_results[control]["SE"] = output[5]
+        reg_results["Intercept"]["t-value"] = output[6]
+        reg_results[x_var]["t-value"] = output[7]
+        reg_results[control]["t-value"] = output[8]
+        reg_results["Intercept"]["p-value"] = output[9]
+        reg_results[x_var]["p-value"] = output[10]
+        reg_results[control]["p-value"] = output[11]
 
-    # unsure if this actually needs a return statement or if it makes sense to
-    # save the R stuff to an object in the first place
+    return reg_results
