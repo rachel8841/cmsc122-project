@@ -52,7 +52,7 @@ variable_dict_list = [
     {'label': 'Age Dependency Ratio', 'value': 'age-dependency-ratio-of-working-age-population'},
     {'label': 'Deaths from Drugs and Alcohol', 'value': 'deaths-from-alcohol-and-drug-use-disorders'},
     {'label': 'Years of Expected Schooling', 'value': 'expected-years-of-schooling'},
-    {'label': 'Female Labor Force Participation Rate', 'value': 'military-expenditure-as-share-of-gdp'},
+    {'label': 'Female Labor Force Participation Rate', 'value': 'oecd-female-labour-force-participation-rate-15-64'},
     {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
     {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
     {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
@@ -60,7 +60,12 @@ variable_dict_list = [
     {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
     {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
     {'label': 'Military Expenditure', 'value': 'military-expenditure-as-share-of-gdp'},
-    {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'}
+    {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'},
+    {'label': 'GDP per capita', 'value': 'average-real-gdp-per-capita-across-countries-and-regions'},
+    {'label': 'Access to Electricity', 'value': 'Share-of-the-population-with-access-to-electricity'},
+    {'label': 'Education Expenditure', 'value': 'total-government-expenditure-on-eduation-gdp'},
+    {'label': 'Out of Pocket Healthcare Expenditure', 'value': 'out-of-pocket-expenditure-per-capita-on-healthcare'},
+    {'label': 'Trade', 'value': 'trade-as-share-of-gdp'}
 ]
 '''
 same as variable_dict_list, but excludes some variables that wouldn't make
@@ -72,22 +77,20 @@ bub_dict_list = [
     {'label': 'Broadband Subscriptions', 'value': 'fixed-broadband-subscriptions-per-100-people'},
     {'label': 'Child Mortality', 'value': 'child-mortality'},
     {'label': 'CO2 Emissions', 'value': 'annual-co2-emissions-per-country'},
-    {'label': 'Disability Adjusted Life Years', 'value': 'dalys-rate-from-all-causes'},
-    {'label': 'Age Dependency Ratio', 'value': 'age-dependency-ratio-of-working-age-population'},
     {'label': 'Deaths from Drugs and Alcohol', 'value': 'deaths-from-alcohol-and-drug-use-disorders'},
-    {'label': 'Years of Expected Schooling', 'value': 'expected-years-of-schooling'},
-    {'label': 'Female Labor Force Participation Rate', 'value': 'military-expenditure-as-share-of-gdp'},
+    {'label': 'Female Labor Force Participation Rate', 'value': 'oecd-female-labour-force-participation-rate-15-64'},
     {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
-    {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
     {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
-    {'label': 'Life Expectancy', 'value': 'life-expectancy'},
     {'label': 'Savings', 'value': 'adjusted-net-savings-per-person'},
     {'label': 'Inequality', 'value': 'economic-inequality-gini-index'},
     {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
-    {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
     {'label': 'Military Expenditure', 'value': 'military-expenditure-as-share-of-gdp'},
-    {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'}
-
+    {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'},
+    {'label': 'GDP per capita', 'value': 'average-real-gdp-per-capita-across-countries-and-regions'},
+    {'label': 'Access to Electricity', 'value': 'Share-of-the-population-with-access-to-electricity'},
+    {'label': 'Education Expenditure', 'value': 'total-government-expenditure-on-eduation-gdp'},
+    {'label': 'Out of Pocket Healthcare Expenditure', 'value': 'out-of-pocket-expenditure-per-capita-on-healthcare'},
+    {'label': 'Trade', 'value': 'trade-as-share-of-gdp'}
 ]
 country_dict_list = [
                 {'label': 'All countries', 'value': 'ALL'},
