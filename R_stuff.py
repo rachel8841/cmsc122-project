@@ -96,7 +96,7 @@ def regression_in_R(x_var,y_var,control=None):
         r_df = robjects.conversion.py2rpy(data)
 
     robjects.globalenv['py_df'] = r_df
-    robjects.r('''
+    output = robjects.r('''
     library(lmtest)
     do_reg = function(df,control=F){
         if control{
@@ -114,3 +114,8 @@ def regression_in_R(x_var,y_var,control=None):
     }
     do_reg(py_df,(ncol(py_df)>=3)
     ''')
+
+    return output
+
+    # unsure if this actually needs a return statement or if it makes sense to
+    # save the R stuff to an object in the first place
