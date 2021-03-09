@@ -116,6 +116,9 @@ def regression_in_R(x_var,y_var,control=None):
     sum = do_reg(py_df,(ncol(py_df)>2))
     as.character(sum$coefficients)
     '''
+    
+    # eventually would like to also return an indicator of
+    # regular vs. robust SEs
     output = [float(x) for x in list(robjects.r(r_call))]
 
     reg_results = {}
