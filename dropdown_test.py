@@ -509,13 +509,17 @@ def setup():
         html.Div(id='y-description'),
         html.Br(),
         html.Div(id='bub-description'),
+        html.H4("Statistics summary:"),
+        html.Br(),
+        html.Div(id='stat-summary'),
         dcc.Graph(id='graph-court'),
     ])
     @app.callback(
         [dash.dependencies.Output('graph-court', 'figure'), 
             dash.dependencies.Output(component_id='x-description', component_property='children'),
             dash.dependencies.Output(component_id='y-description', component_property='children'),
-            dash.dependencies.Output(component_id='bub-description', component_property='children')],
+            dash.dependencies.Output(component_id='bub-description', component_property='children'),
+            dash.dependencies.Output(component_id='stat-summary', component_property='children')],
         [dash.dependencies.Input('xvar-dropdown', 'value'), 
             dash.dependencies.Input('yvar-dropdown', 'value'), 
             dash.dependencies.Input('bubblevar-dropdown', 'value'), 
@@ -538,8 +542,9 @@ def setup():
         x_desc = label_names[0] + ": " + descriptions[0]
         y_desc = label_names[1] + ": " + descriptions[1]
         bub_desc = label_names[2] + ": " + descriptions[2]
+        stat_summary = ""
 
-        return (fig, x_desc, y_desc, bub_desc)
+        return (fig, x_desc, y_desc, bub_desc, stat_summary)
 
     if __name__ == '__main__':
         app.run_server(debug=True)
