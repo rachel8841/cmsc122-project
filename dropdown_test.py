@@ -8,6 +8,8 @@ import dash_html_components as html
 import dataframes
 import webscraping
 import util
+import R_stuff
+import line
 
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
 top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", 
@@ -519,13 +521,22 @@ def setup():
             countries = codes
         var_list = [xval, yval, bubval]
 
+    
+
+        if control:
+            regression_dict = R_stuff.regression_in_R(xval, yval, bubval)
+        else:
+            regression_dict = R_stuff.regression_in_R(xval,yval)
+
         fig, col_list = plot(var_list, countries)
+
         descriptions = webscraping.scrape(var_list)
 
         label_names = [util.clean_column_name(item) for item in col_list]
         x_desc = label_names[0] + ": " + descriptions[0]
         y_desc = label_names[1] + ": " + descriptions[1]
         bub_desc = label_names[2] + ": " + descriptions[2]
+
 
         return (fig, x_desc, y_desc, bub_desc)
 
