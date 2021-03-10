@@ -110,9 +110,9 @@ def regression_in_R(x_var,y_var,control=None,year=None):
             quad_model = lm(df[,6] ~ df[,4] + df[,4]^2 + df[,5])
             log_model = lm(df[,6] ~ df$log + df[,5])
         } else{
-            base_model = lm(df[,6] ~ df[,4])
-            quad_model = lm(df[,6] ~ df[,4] + df[,4]^2)
-            log_model = lm(df[,6] ~ df$log)
+            base_model = lm(df[,5] ~ df[,4])
+            quad_model = lm(df[,5] ~ df[,4] + df[,4]^2)
+            log_model = lm(df[,5] ~ df$log)
         }
         if (summary(base_model)$adj.r.squared >= summary(quad_model)$adj.r.squared){
             if (summary(base_model)$adj.r.squared >= summary(log_model)$adj.r.squared){
