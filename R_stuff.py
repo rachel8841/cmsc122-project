@@ -79,7 +79,7 @@ def make_dataframe(x_var,y_var,control=None):
     return df
 
 
-def regression_in_R(x_var,y_var,control=None):
+def regression_in_R(x_var,y_var,control=None,year=None):
     '''
     Uses the rpy2 package to perform data analysis in R using specified X and
     Y variables.
@@ -88,11 +88,14 @@ def regression_in_R(x_var,y_var,control=None):
         x_var: the main explanatory variable of interest, as a string
         y_var: the dependent variable, as a string
         control: a covariate to control for, as a string
+        year: (str) year of data that we're interesting in, None by default
 
     Output: dictionary of 'Intercept', x_var, and control, each mapping to a
     dictionary of 'Estimate', 'SEs', 't-value', and 'p-value' (ints) 
     '''
     data = make_dataframe(x_var,y_var,control)
+    if year is not None:
+        data = data[data["Year"]==year]
 
     with localconverter(robjects.default_converter+pandas2ri.converter):
         r_df = robjects.conversion.py2rpy(data)
@@ -100,10 +103,18 @@ def regression_in_R(x_var,y_var,control=None):
     
     r_call = '''
     do_reg = function(df,control=F){
+        df$exp = df[,1]^2
         if (control){
-            model = lm(df[,3] ~ df[,1] + df[,2])
+            base_model = lm(df[,3] ~ df[,1] + df[,2])
+            quad_model = lm(df[,3] ~ df[,1] + df$exp + df[,2])
         } else{
-            model = lm(df[,2] ~ df[,1])
+            base_model = lm(df[,2] ~ df[,1])
+            quad_model = lm(df[,2] ~ df[,1] + df$exp)
+        }
+        if (summary(base_model)$r.squared >= summary(quad_model)$r.squared){
+            model = base_model
+        } else{
+            model = quad_model
         }
         test = bptest(model)
         p_val = unname(test$p.value)
