@@ -1,0 +1,39 @@
+# three types of models: linear, quadratic, logarithmic
+# gives r-squared (wait actually it doesn't but maybe it should)
+# gives estimates of coefficients, p & t vals for each coeff, SE (either 
+#   'robust' or 'normal' depending on heteroscedasticity)
+# (does heteroscedasticity test? get and mention that too?)
+
+'For the given year {}, the best fitting model for the relationship between
+{yvar} versus {xvar} {with the control {control}} is {}, chosen from 
+linear, quadratic, or logarithmic models.'
+
+'The model has an R-squared value of {r2}. The R-squared value is a measure of 
+relative predictive power.' 
+
+Lin: 'Here, it means that {}% of the variation in {yvar} can be explained by the
+variation in {xvar}.'
+Quad: 'Here, it means that {}% of the variation in {yvar} can be explained by 
+the variation in the square of {xvar}.'
+Log: 'Here, it means that {}% of the variation in {yvar} can be explained by the
+variation in the logarithm of {xvar}.'
+# Only the dependent/response variable is log-transformed. Exponentiate the coefficient, subtract one from this number, and multiply by 100. This gives the percent increase (or decrease) in the response for every one-unit increase in the independent variable. Example: the coefficient is 0.198. (exp(0.198) – 1) * 100 = 21.9. For every one-unit increase in the independent variable, our dependent variable increases by about 22%.
+# https://data.library.virginia.edu/interpreting-log-transformations-in-a-linear-model/
+
+
+'The model gives estimates of the intercepts and coefficients, as well as their 
+standard errors and p-values. The standard error reported is normal or robust 
+depending on whether the y and x variables are homo- or heteroscedastic.'
+# ask noah about heteroscedasticity stuff idk this
+
+# interpretation of intercept
+Lin: 
+Quad: 
+Log: 
+(Control): 
+
+# interpretation of coeff(s)
+Lin: 
+Quad: 
+Log: 
+(Control): 
