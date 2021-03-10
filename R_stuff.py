@@ -111,7 +111,7 @@ def regression_in_R(x_var,y_var,control=None,year=None):
             base_model = lm(df[,2] ~ df[,1])
             quad_model = lm(df[,2] ~ df[,1] + df$exp)
         }
-        if (summary(base_model)$r.squared >= summary(quad_model)$r.squared){
+        if (summary(base_model)$adj.r.squared >= summary(quad_model)$adj.r.squared){
             model = base_model
         } else{
             model = quad_model
