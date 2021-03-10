@@ -56,6 +56,7 @@ variable_dict_list = [
     {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
     {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
     {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
+    {'label': 'Savings', 'value': 'adjusted-net-savings-per-person'},
     {'label': 'Life Expectancy', 'value': 'life-expectancy'},
     {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
     {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
@@ -395,6 +396,7 @@ def plot(var_list, countries):
         }
         fig_dict["data"].append(data_dict)
 
+
     #makes the frames of the animation
     for year in years:
         frame = {"data": [], "name": str(year)}
@@ -411,7 +413,7 @@ def plot(var_list, countries):
                 "marker": {
                     "sizemode": "area",
                     "sizeref": 2*max(merged[col_list[2]]) / (15000),
-                    "size": list(dataset_by_year_and_cont[col_list[2]]),
+                    "size": [abs(item) for item in list(dataset_by_year_and_cont[col_list[2]])],
                     "color": custom_colors[continent]
                 },
                 "name": continent
@@ -477,10 +479,17 @@ def setup():
             value='annual-co2-emissions-per-country'
         ),
         dcc.Dropdown(
-            id = 'country-dropdown',
+            id='country-dropdown',
             options=country_dict_list,
             value=top_twenty,
             multi=True
+        ),
+        dcc.Checklist(
+            id='control-check',
+            options=[
+                {'label': 'Use third variable as control', 'value': 'True'}
+            ],
+            value = []
         ),
         html.H4("Description of variables:"),
         html.Br(),
@@ -499,11 +508,13 @@ def setup():
         [dash.dependencies.Input('xvar-dropdown', 'value'), 
             dash.dependencies.Input('yvar-dropdown', 'value'), 
             dash.dependencies.Input('bubblevar-dropdown', 'value'), 
-            dash.dependencies.Input('country-dropdown', 'value')]
+            dash.dependencies.Input('country-dropdown', 'value'),
+            dash.dependencies.Input('control-check', 'value')
+            ]
         )
     
     #creates graph based on the selections on the drop down menus
-    def create_graph(xval, yval, bubval, countries):
+    def create_graph(xval, yval, bubval, countries, control):
         if 'ALL' in countries:
             countries = codes
         var_list = [xval, yval, bubval]
