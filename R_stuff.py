@@ -99,17 +99,17 @@ def regression_in_R(x_var,y_var,control=None,year=None):
 
     with localconverter(robjects.default_converter+pandas2ri.converter):
         r_df = robjects.conversion.py2rpy(data)
-    robjects.globalenv['py_df'] = r_df
+        robjects.globalenv['py_df'] = r_df
+            
     
     r_call = '''
     do_reg = function(df,control=F){
-        df$exp = df[,1]^2
         if (control){
-            base_model = lm(df[,3] ~ df[,1] + df[,2])
-            quad_model = lm(df[,3] ~ df[,1] + df$exp + df[,2])
+            base_model = lm(df[,5] ~ df[,4] + df[,6])
+            quad_model = lm(df[,5] ~ df[,4] + df[,4]^2 + df[,6])
         } else{
-            base_model = lm(df[,2] ~ df[,1])
-            quad_model = lm(df[,2] ~ df[,1] + df$exp)
+            base_model = lm(df[,5] ~ df[,4])
+            quad_model = lm(df[,5] ~ df[,4] + df[,4]^2)
         }
         if (summary(base_model)$adj.r.squared >= summary(quad_model)$adj.r.squared){
             model = base_model
@@ -124,7 +124,7 @@ def regression_in_R(x_var,y_var,control=None,year=None):
             return(summary(model,robust=T))
         }
     }
-    sum = do_reg(py_df,(ncol(py_df)>2))
+    sum = do_reg(py_df,(ncol(py_df)==6))
     as.character(sum$coefficients)
     '''
     
