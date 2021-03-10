@@ -303,7 +303,7 @@ country_dict_list = [
                 {'label': 'Zimbabwe', 'value': 'ZWE'}
             ]
 
-def plot(var_list, countries):
+def plot(var_list, countries, control):
     '''
     var_list: list of strings
     var_list[0] is x variable
@@ -422,7 +422,16 @@ def plot(var_list, countries):
             }
             frame["data"].append(data_dict)
 
+        #regression line
+        control_var = None
+        if control == 'True':
+            control_var = var_list[2]
+
+        x_range = [merged[col_list[0]].min(), merged[col_list[0]].max()]
+
+        frame["data"].append(line.create_function(x_range, var_list, R_stuff.regression_in_R(var_list[0], var_list[1], year, control_var)))
         fig_dict["frames"].append(frame)
+
         slider_step = {"args": [
             [year],
             {"frame": {"duration": 300},
@@ -521,14 +530,7 @@ def setup():
             countries = codes
         var_list = [xval, yval, bubval]
 
-    
-
-        if control:
-            regression_dict = R_stuff.regression_in_R(xval, yval, bubval)
-        else:
-            regression_dict = R_stuff.regression_in_R(xval,yval)
-
-        fig, col_list = plot(var_list, countries)
+        fig, col_list = plot(var_list, countries, control)
 
         descriptions = webscraping.scrape(var_list)
 
@@ -536,7 +538,6 @@ def setup():
         x_desc = label_names[0] + ": " + descriptions[0]
         y_desc = label_names[1] + ": " + descriptions[1]
         bub_desc = label_names[2] + ": " + descriptions[2]
-
 
         return (fig, x_desc, y_desc, bub_desc)
 
