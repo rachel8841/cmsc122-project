@@ -9,6 +9,7 @@ def create_dataframes(variable_list, countries):
     "happiness", "homicides", "life-expectancy", "pollution-deaths", "savings"]
     variable_list has a maximum of three variables
     '''
+    
     df_list = []
     for var in variable_list:
         csv_name = "data/" + var + ".csv"
@@ -19,18 +20,21 @@ def create_dataframes(variable_list, countries):
 
     return merged
 
-def read_covid_data(variable_list):
+
+def clean_column_name(variable):
     '''
-    possible variables: new_cases_per_million, new_deaths_per_million, weekly_icu_patients_per_million, new_tests_per_thousand, new_vaccinations_smoothed_per_million
+    This cleans the column name for the variable description
+    We want to keep the string in parentheses if it tells us something
+        about the units, for example "Age dependency ratio (% of working-age population)"
+        but we want to discard the string in parentheses if it relates to 
+        the data source, for example "Public expenditure on health %GDP (OWID extrapolated series)"
     '''
-    url = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv"
-    df = pd.read_csv(url,index_col=0,parse_dates=[0])
 
-    merged = df[variable_list]
-
-    return merged
-
-
+    inside = variable[variable.find("(")+1:variable.find(")")]
+    if "%" in inside or "per" in inside:
+        return variable
+    else:
+        return variable[0: variable.find("(")]
 
 
 

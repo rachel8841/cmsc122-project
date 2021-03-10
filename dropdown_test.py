@@ -534,7 +534,7 @@ def setup():
 
         descriptions = webscraping.scrape(var_list)
 
-        label_names = [util.clean_column_name(item) for item in col_list]
+        label_names = [dataframes.clean_column_name(item) for item in col_list]
         x_desc = label_names[0] + ": " + descriptions[0]
         y_desc = label_names[1] + ": " + descriptions[1]
         bub_desc = label_names[2] + ": " + descriptions[2]

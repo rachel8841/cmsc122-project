@@ -9,6 +9,7 @@ def scrape(var_list):
 
     return (get_description(x), get_description(y), get_description(bub))
 
+
 def get_description(variable):
     '''
     Gets the description of one variable
