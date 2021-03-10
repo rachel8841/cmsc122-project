@@ -104,59 +104,109 @@ def regression_in_R(x_var,y_var,control=None,year=None):
     
     r_call = '''
     do_reg = function(df,control=F){
+        df$log = log(df[,4])
         if (control){
-            base_model = lm(df[,5] ~ df[,4] + df[,6])
-            quad_model = lm(df[,5] ~ df[,4] + df[,4]^2 + df[,6])
+            base_model = lm(df[,6] ~ df[,4] + df[,5])
+            quad_model = lm(df[,6] ~ df[,4] + df[,4]^2 + df[,5])
+            log_model = lm(df[,6] ~ df$log + df[,5])
         } else{
-            base_model = lm(df[,5] ~ df[,4])
-            quad_model = lm(df[,5] ~ df[,4] + df[,4]^2)
+            base_model = lm(df[,6] ~ df[,4])
+            quad_model = lm(df[,6] ~ df[,4] + df[,4]^2)
+            log_model = lm(df[,6] ~ df$log)
         }
         if (summary(base_model)$adj.r.squared >= summary(quad_model)$adj.r.squared){
-            model = base_model
-        } else{
+            if (summary(base_model)$adj.r.squared >= summary(log_model)$adj.r.squared){
+                model = base_model
+                type = "base"
+            } else{
+                model = log_model
+                type = "log"
+            }
+        } else if (summary(quad_model)$adj.r.squared >= summary(log_model)$adj.r.squared){
             model = quad_model
+            type = "quad"
+        } else{
+            model = log_model
+            type = "log"
         }
         test = bptest(model)
         p_val = unname(test$p.value)
-        if (p_val > 0.10){
-            return(summary(model))
+        if (p_val > 0.1){
+            SE = "normal"
+            l0 = list(as.character(summary(model)$coefficients),type,SE)
+            return(l0)
         } else{
-            return(summary(model,robust=T))
+            SE = "robust"
+            l0 = list(as.character(summary(model,robust=T)$coefficients),type,SE)
+            return(l0)
         }
     }
-    sum = do_reg(py_df,(ncol(py_df)==6))
-    as.character(sum$coefficients)
+    do_reg(py_df,(ncol(py_df)==6))
     '''
     
-    # eventually would like to also return an indicator of
-    # regular vs. robust SEs
-    output = [float(x) for x in list(robjects.r(r_call))]
+    output = list(robjects.r(r_call))
+    values = [float(x) for x in output[0]]
 
     reg_results = {}
+    reg_results["Model Spec"] = str(output[1]).split("\"")[1]
+    reg_results["SE Type"] = str(output[2]).split("\"")[1]
     reg_results["Intercept"] = {}
     reg_results[x_var] = {}
-    if control is None:
-        reg_results["Intercept"]["Estimate"] = output[0]
-        reg_results[x_var]["Estimate"] = output[1]
-        reg_results["Intercept"]["SE"] = output[2]
-        reg_results[x_var]["SE"] = output[3]
-        reg_results["Intercept"]["t-value"] = output[4]
-        reg_results[x_var]["t-value"] = output[5]
-        reg_results["Intercept"]["p-value"] = output[6]
-        reg_results[x_var]["p-value"] = output[7]
+    if control is None and output[1]!="quad":
+        reg_results["Intercept"]["Estimate"] = values[0]
+        reg_results[x_var]["Estimate"] = values[1]
+        reg_results["Intercept"]["SE"] = values[2]
+        reg_results[x_var]["SE"] = values[3]
+        reg_results["Intercept"]["t-value"] = values[4]
+        reg_results[x_var]["t-value"] = values[5]
+        reg_results["Intercept"]["p-value"] = values[6]
+        reg_results[x_var]["p-value"] = values[7]
+    elif output[1]!="quad":
+        reg_results[control] = {}
+        reg_results["Intercept"]["Estimate"] = values[0]
+        reg_results[x_var]["Estimate"] = values[1]
+        reg_results[control]["Estimate"] = values[2]
+        reg_results["Intercept"]["SE"] = values[3]
+        reg_results[x_var]["SE"] = values[4]
+        reg_results[control]["SE"] = values[5]
+        reg_results["Intercept"]["t-value"] = values[6]
+        reg_results[x_var]["t-value"] = values[7]
+        reg_results[control]["t-value"] = values[8]
+        reg_results["Intercept"]["p-value"] = values[9]
+        reg_results[x_var]["p-value"] = values[10]
+        reg_results[control]["p-value"] = values[11]
+    elif control is None:
+        reg_results["Square"] = {}
+        reg_results["Intercept"]["Estimate"] = values[0]
+        reg_results[x_var]["Estimate"] = values[1]
+        reg_results["Square"]["Estimate"] = values[2]
+        reg_results["Intercept"]["SE"] = values[3]
+        reg_results[x_var]["SE"] = values[4]
+        reg_results["Square"]["SE"] = values[5]
+        reg_results["Intercept"]["t-value"] = values[6]
+        reg_results[x_var]["t-value"] = values[7]
+        reg_results["Square"]["t-value"] = values[8]
+        reg_results["Intercept"]["p-value"] = values[9]
+        reg_results[x_var]["p-value"] = values[10]
+        reg_results["Square"]["p-value"] = values[11]
     else:
         reg_results[control] = {}
-        reg_results["Intercept"]["Estimate"] = output[0]
-        reg_results[x_var]["Estimate"] = output[1]
-        reg_results[control]["Estimate"] = output[2]
-        reg_results["Intercept"]["SE"] = output[3]
-        reg_results[x_var]["SE"] = output[4]
-        reg_results[control]["SE"] = output[5]
-        reg_results["Intercept"]["t-value"] = output[6]
-        reg_results[x_var]["t-value"] = output[7]
-        reg_results[control]["t-value"] = output[8]
-        reg_results["Intercept"]["p-value"] = output[9]
-        reg_results[x_var]["p-value"] = output[10]
-        reg_results[control]["p-value"] = output[11]
+        reg_results["Square"] = {}
+        reg_results["Intercept"]["Estimate"] = values[0]
+        reg_results[x_var]["Estimate"] = values[1]
+        reg_results["Square"]["Estimate"] = values[2]
+        reg_results[control]["Estimate"] = values[3]
+        reg_results["Intercept"]["SE"] = values[4]
+        reg_results[x_var]["SE"] = values[5]
+        reg_results["Square"]["SE"] = values[6]
+        reg_results[control]["SE"] = values[7]
+        reg_results["Intercept"]["t-value"] = values[8]
+        reg_results[x_var]["t-value"] = values[9]
+        reg_results["Square"]["t-value"] = values[10]
+        reg_results[control]["t-value"] = values[11]
+        reg_results["Intercept"]["p-value"] = values[12]
+        reg_results[x_var]["p-value"] = values[13]
+        reg_results["Square"]["p-value"] = values[14]
+        reg_results[control]["p-value"] = values[15]
 
     return reg_results
