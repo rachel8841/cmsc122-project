@@ -77,10 +77,16 @@ def make_dataframe(x_var,y_var,control=None,countries=codes):
     header += x_var_list + [y_var]
     df.columns = header
 
+    #slightly adjust values to remove zero values which cause errors in R for log regressions
+    df.iloc[:,3] += 0.001
+    df.iloc[:,4] += 0.001
+    if control is not None:
+        df.iloc[:,5] += 0.001
+
     return df
 
 
-def regression_in_R(x_var,y_var,control=None,year=None,countries=codes):
+def regression_in_R(x_var,y_var,control=None,countries=codes,year=None):
     '''
     Uses the rpy2 package to perform data analysis in R using specified X and
     Y variables.

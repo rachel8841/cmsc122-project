@@ -7,7 +7,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dataframes
 import webscraping
-import util
 import R_regression
 import line
 
@@ -318,7 +317,7 @@ def plot(var_list, countries, control):
     continents_df = pd.read_csv("data/continents.csv")
 
     merged = reduce(lambda left, right: pd.merge(left,right,on=['Code', 'Entity']), [merged, continents_df])
-    years = list(set(merged['Year']))
+    years = sorted(list(set(merged['Year'])))
     continents = list(set(merged["Continent"]))
 
     # make figure
@@ -336,14 +335,14 @@ def plot(var_list, countries, control):
         {
             "buttons": [
                 {
-                    "args": [None, {"frame": {"duration": 500},
+                    "args": [None, {"frame": {"duration": 500, "redraw": False},
                                     "fromcurrent": True, "transition": {"duration": 300,
                                                                         "easing": "quadratic-in-out"}}],
                     "label": "Play",
                     "method": "animate"
                 },
                 {
-                    "args": [[None], {"frame": {"duration": 0},
+                    "args": [[None], {"frame": {"duration": 0, "redraw": False},
                                     "mode": "immediate"}],
                     "label": "Pause",
                     "method": "animate"
@@ -377,6 +376,15 @@ def plot(var_list, countries, control):
         "steps": []
     }
 
+    #generates the regression for all years
+    control_var = None
+    if control == "True":
+        control_var = var_list[2]
+    
+    regression_results = R_regression.regression_in_R(var_list[0], var_list[1], control_var, countries)
+    regression_range = [merged[col_list[0]].min(), merged[col_list[0]].max()]
+    regression_dict = line.create_function(regression_range, var_list, regression_results)
+
     #makes the first frame of data for the first year
     year = years[0]
     for continent in continents:
@@ -392,12 +400,12 @@ def plot(var_list, countries, control):
             "marker": {
                 "sizemode": "area",
                 "sizeref": 15000,
-                "size": list(dataset_by_year_and_cont[col_list[2]])
+                "size": list(dataset_by_year_and_cont[col_list[2]]),
+                "color": custom_colors[continent]
             },
             "name": continent
         }
         fig_dict["data"].append(data_dict)
-
 
     #makes the frames of the animation
     for year in years:
@@ -422,19 +430,11 @@ def plot(var_list, countries, control):
             }
             frame["data"].append(data_dict)
 
-        #regression line
-        control_var = None
-        if control == 'True':
-            control_var = var_list[2]
-
-        x_range = [merged[col_list[0]].min(), merged[col_list[0]].max()]
-
-        frame["data"].append(line.create_function(x_range, var_list, R_regression.regression_in_R(var_list[0], var_list[1], year, control_var)))
         fig_dict["frames"].append(frame)
 
         slider_step = {"args": [
             [year],
-            {"frame": {"duration": 300},
+            {"frame": {"duration": 300, "redraw": False},
             "mode": "immediate",
             "transition": {"duration": 300}}
         ],
@@ -442,7 +442,7 @@ def plot(var_list, countries, control):
             "method": "animate"}
         sliders_dict["steps"].append(slider_step)
 
-
+    fig_dict["data"].append(regression_dict)
     fig_dict["layout"]["sliders"] = [sliders_dict]
     
     fig = go.Figure(fig_dict)
