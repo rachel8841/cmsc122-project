@@ -429,7 +429,7 @@ def plot(var_list, countries, control):
 
         x_range = [merged[col_list[0]].min(), merged[col_list[0]].max()]
 
-        frame["data"].append(line.create_function(x_range, var_list, R_stuff.regression_in_R(var_list[0], var_list[1], year, control_var)))
+        frame["data"].append(line.create_function(x_range, var_list, R_regression.regression_in_R(var_list[0], var_list[1], year, control_var)))
         fig_dict["frames"].append(frame)
 
         slider_step = {"args": [
