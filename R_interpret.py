@@ -75,9 +75,51 @@ def make_x_var_list(reg_results,x_var,y_var,control=None,year=None): #countries=
         int_ci_text += ' Since zero lies in this interval, there is no \
           statistical evidence that the y-intercept is nonzero.'
     
-    # sentence for coeff
+    # sentence for coeff (not quad)
+    if model_type != 'quad':
+        if model_type == 'base':
+            coeff_text = 'The coefficient {c} represents the change in {y} for \
+              a one unit increase in {x}'.format(c=x_coeff['Estimate'], \
+              y=y_var, x=x_var)
+        elif model_type == 'log':
+            coeff_text = 'The coefficient {c} represents the change in {y} for \
+              a one percent increase in {x}'.format(c=x_coeff['Estimate'], \
+              y=y_var, x=x_var)
+        if control_on:
+            coeff_text += ', when {ctrl} is held constant'.format(ctrl=control)
+        coeff_text += '.'
+        
+        # sentence for coeff's confidence interval
+        coeff_ci = (x_coeff['Estimate'] - 1.66 * x_coeff['SE'], \
+          x_coeff['Estimate'] + 1.66 * x_coeff['SE'])
+        coeff_ci_text = ' We are 90% confident that the true value of this \
+          coefficient lies between ' + str(coeff_ci[0]) + ' and ' + \
+          str(coeff_ci[1]) + '.'
+        if 0 > coeff_ci[0] and 0 < coeff_ci[1]:
+            int_ci_text += ' Since zero lies in this interval, there is no \
+              statistical evidence that this coefficient is nonzero.'
     
-    # sentence for coeff's confidence interval
+    # sentence for coeffs (quad)
+    else:
+        coeff_text = 'There are no simple interpretations of the two \
+          coefficients estimated for a quadratic model, but the estimated \
+          values here are ' + str(x_coeff['Estimate']) + ' on the linear term \
+          and ' + str(reg_results["Square"]['Estimate']) + ' on the quadratic \
+          term.'
+          
+        coeff_ci = (x_coeff['Estimate'] - 1.66 * x_coeff['SE'], \
+          x_coeff['Estimate'] + 1.66 * x_coeff['SE'])
+        coeff_ci_2 = (reg_results["Square"]['Estimate'] - 1.66 * \
+          reg_results["Square"]['SE'], reg_results["Square"]['Estimate'] + \
+          1.66 * reg_results["Square"]['SE'])
+        coeff_ci_text = ' We are 90% confident that the true value of the \
+          linear coefficient lies between ' + str(coeff_ci[0]) + ' and ' + \
+          str(coeff_ci[1]) + ', and that the true value of the quadratic \
+          coefficient lies between ' + str(coeff_ci_2[0]) + ' and ' + \
+          str(coeff_ci_2[1]) + '.'
+        #if 0 > coeff_ci[0] and 0 < coeff_ci[1]:
+        #    int_ci_text += ' Since zero lies in the first interval, there is \
+        #      no statistical evidence that this coefficient is nonzero.'
     
     output = intro + '\n' + r2_text + '\n' + est_text + '\n' + int_intro + \
       int_ci_text + '\n' + coeff_text + coeff_ci_text
