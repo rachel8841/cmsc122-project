@@ -10,6 +10,23 @@ import webscraping
 import R_regression
 import line
 
+'''
+Citations:
+    https://stackoverflow.com/questions/59867255/can-i-create-multiple-dropdown-menus-in-python-dash
+    for creating mulitple dropdowns in Dash
+
+    https://stackoverflow.com/questions/61042682/plotly-dash-update-graph-with-dropdown-input
+    for updating the graph based on dropdown selections
+
+    https://plotly.com/python/animations/#using-a-slider-and-buttons
+    the settings for the slider and animations and the spacing/padding
+        for the buttons and slider (lines 367 - 412) are from this example
+    lines 426 - 493 (the method of looping through years and then continents 
+        to create each frame of the animation) is taken and modified from
+        this example
+'''
+
+#list of countries that we consider representative of various regions
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
 top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", 
     "ARE", "EGY"]
@@ -23,6 +40,7 @@ custom_colors = {
         'Oceania': 'rgb(15, 84, 249)'
     }
 
+#all country codes
 codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW',
     'AUS', 'AUT', 'AZE', 'BHS', 'BHR', 'BGD', 'BRB', 'BLR', 'BEL', 'BLZ',
     'BEN', 'BTN', 'BOL', 'BIH', 'BWA', 'BRA', 'BRN', 'BGR', 'BFA', 'BDI',
@@ -45,6 +63,7 @@ codes = ['AFG', 'ALB', 'DZA', 'AND', 'AGO', 'AIA', 'ATG', 'ARG', 'ARM', 'ABW',
     'TKM', 'TUV', 'UGA', 'UKR', 'ARE', 'GBR', 'USA', 'UZB', 'VUT', 'VEN',
     'VNM', 'YEM', 'ZMB', 'ZWE']
 
+#list for dropdown menu
 variable_dict_list = [
     {'label': 'Broadband Subscriptions', 'value': 'fixed-broadband-subscriptions-per-100-people'},
     {'label': 'Child Mortality', 'value': 'child-mortality'},
@@ -70,11 +89,10 @@ variable_dict_list = [
     {'label': 'Trade', 'value': 'trade-as-share-of-gdp'},
     {'label': 'Population', 'value': 'projected-population-by-country'}
 ]
+
 '''
 same as variable_dict_list, but excludes some variables that wouldn't make
-sense when represented as a marker bubble
-for example, savings (which sometimes has negative values) or military 
-expenditure as a % of gdp, since this doesn't vary much between countries
+sense when represented as a bubble
 '''
 bub_dict_list = [
     {'label': 'Broadband Subscriptions', 'value': 'fixed-broadband-subscriptions-per-100-people'},
@@ -96,6 +114,8 @@ bub_dict_list = [
     {'label': 'Trade', 'value': 'trade-as-share-of-gdp'},
     {'label': 'Population', 'value': 'projected-population-by-country'}
 ]
+
+#list for country dropdown
 country_dict_list = [
                 {'label': 'All countries', 'value': 'ALL'},
                 {'label': 'Afghanistan', 'value': 'AFG'},
@@ -306,10 +326,18 @@ country_dict_list = [
 
 def plot(var_list, countries, control):
     '''
-    var_list: list of strings
-    var_list[0] is x variable
-    var_list[1] is y variable
-    var_list[2] is bubble size
+    Plots the graph
+    Inputs:
+        var_list: list of strings
+            var_list[0] is x variable
+            var_list[1] is y variable
+            var_list[2] is bubble size
+        countries (list): list of country codes
+        control: either [] or 'True', if control = 'True', then we use the
+            bubble var as a control variable
+    Outputs:
+        fig: plotly graph object figure
+        col_list (list): list of string column names
     '''
 
     merged = dataframes.create_dataframes(var_list, countries)
@@ -318,28 +346,32 @@ def plot(var_list, countries, control):
     col_list = [merged.columns[3], merged.columns[4], merged.columns[5]]
     continents_df = pd.read_csv("data/continents.csv")
 
-    merged = reduce(lambda left, right: pd.merge(left,right,on=['Code', 'Entity']), [merged, continents_df])
+    merged = reduce(lambda left, right: pd.merge(left,right,on=['Code', 
+        'Entity']), [merged, continents_df])
     years = sorted(list(set(merged['Year'])))
     continents = list(set(merged["Continent"]))
 
-    # make figure
+    #creates fig_dict
     fig_dict = {
         "data": [],
         "layout": {},
         "frames": []
     }
 
-    # fill in most of layout
+    #sets axis names 
     fig_dict["layout"]["xaxis"] = {"title": col_list[0]}
     fig_dict["layout"]["yaxis"] = {"title": col_list[1]}
+
     fig_dict["layout"]["hovermode"] = "closest"
+
+    #sets animation attributes
     fig_dict["layout"]["updatemenus"] = [
         {
             "buttons": [
                 {
                     "args": [None, {"frame": {"duration": 500, "redraw": False},
-                                    "fromcurrent": True, "transition": {"duration": 300,
-                                                                        "easing": "quadratic-in-out"}}],
+                                    "fromcurrent": True, 
+                                    "transition": {"duration": 300, "easing": "quadratic-in-out"}}],
                     "label": "Play",
                     "method": "animate"
                 },
@@ -360,6 +392,7 @@ def plot(var_list, countries, control):
         }
     ]
 
+    #sets attributes for slider
     sliders_dict = {
         "active": 0,
         "yanchor": "top",
@@ -378,14 +411,16 @@ def plot(var_list, countries, control):
         "steps": []
     }
 
-    #generates the regression for all years
+    #generates the regression for all years & creates curve of best fit
     control_var = None
     if control == "True":
         control_var = var_list[2]
     
-    regression_results = R_regression.regression_in_R(var_list[0], var_list[1], control_var, countries)
+    regression_results = R_regression.regression_in_R(var_list[0], 
+        var_list[1], control_var, countries)
     regression_range = [merged[col_list[0]].min(), merged[col_list[0]].max()]
-    regression_dict = line.create_function(regression_range, var_list, regression_results)
+    regression_dict = line.create_function(regression_range, var_list,
+        regression_results)
 
     #makes the first frame of data for the first year
     year = years[0]
@@ -393,8 +428,13 @@ def plot(var_list, countries, control):
         dataset_by_year = merged[merged["Year"] == year]
         dataset_by_year_and_cont = dataset_by_year[
             dataset_by_year["Continent"] == continent]
-        dummy_df = {"Entity":".", "Code":".", "Year":year, col_list[0]:0.0001, col_list[1]:0.0001, col_list[2]:0.001, "Continent":continent}
-        dataset_by_year_and_cont = dataset_by_year_and_cont.append(dummy_df, ignore_index = True)
+
+        #makes all of the continents show up on the legend in the first frame
+        dummy_df = {"Entity":".", "Code":".", "Year":year, 
+            col_list[0]:0.0001, col_list[1]:0.0001, col_list[2]:0.001, 
+            "Continent":continent}
+        dataset_by_year_and_cont = dataset_by_year_and_cont.append(dummy_df, 
+            ignore_index = True)
 
         data_dict = {
             "x": list(dataset_by_year_and_cont[col_list[0]]),
@@ -427,7 +467,8 @@ def plot(var_list, countries, control):
                 "marker": {
                     "sizemode": "area",
                     "sizeref": 2*max(merged[col_list[2]]) / (15000),
-                    "size": [abs(item) for item in list(dataset_by_year_and_cont[col_list[2]])],
+                    "size": [abs(item) for 
+                        item in list(dataset_by_year_and_cont[col_list[2]])],
                     "color": custom_colors[continent]
                 },
                 "name": continent
@@ -451,7 +492,7 @@ def plot(var_list, countries, control):
     
     fig = go.Figure(fig_dict)
 
-    #rescales the axes to include the maximum and mininum values of the variables
+    #rescales the axes to include the max and min values of the variables
     fig.update_xaxes(range=[merged[col_list[0]].min() - 
         .2*merged[col_list[0]].max(),
         merged[col_list[0]].max() + .2*merged[col_list[0]].max()])
@@ -473,10 +514,15 @@ def plot(var_list, countries, control):
     return fig, col_list
 
 def setup():
+    '''
+    Generates the data visualization
+    '''
+
     external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
     app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+    #creates dropdowns and checkboxes
     app.layout = html.Div([
         dcc.Dropdown(
             id='xvar-dropdown',
@@ -534,6 +580,16 @@ def setup():
     
     #creates graph based on the selections on the drop down menus
     def create_graph(xval, yval, bubval, countries, control):
+        '''
+        Creates outputs based on the input from the dropdowns and checkboxes
+        Inputs:
+            xval, yval, bubval (strings)
+            countries (list)
+            control: either [] or 'True'
+        Outputs:
+            (fig, x_desc, y_desc, bub_desc, stat_summary): tuple containing
+                everything that needs to be updated in the visualization
+        '''
         if 'ALL' in countries:
             countries = codes
         var_list = [xval, yval, bubval]
