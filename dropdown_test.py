@@ -67,7 +67,8 @@ variable_dict_list = [
     {'label': 'Access to Electricity', 'value': 'Share-of-the-population-with-access-to-electricity'},
     {'label': 'Education Expenditure', 'value': 'total-government-expenditure-on-education-gdp'},
     {'label': 'Out of Pocket Healthcare Expenditure', 'value': 'out-of-pocket-expenditure-per-capita-on-healthcare'},
-    {'label': 'Trade', 'value': 'trade-as-share-of-gdp'}
+    {'label': 'Trade', 'value': 'trade-as-share-of-gdp'},
+    {'label': 'Population', 'value': 'projected-population-by-country'}
 ]
 '''
 same as variable_dict_list, but excludes some variables that wouldn't make
@@ -92,7 +93,8 @@ bub_dict_list = [
     {'label': 'Access to Electricity', 'value': 'Share-of-the-population-with-access-to-electricity'},
     {'label': 'Education Expenditure', 'value': 'total-government-expenditure-on-eduation-gdp'},
     {'label': 'Out of Pocket Healthcare Expenditure', 'value': 'out-of-pocket-expenditure-per-capita-on-healthcare'},
-    {'label': 'Trade', 'value': 'trade-as-share-of-gdp'}
+    {'label': 'Trade', 'value': 'trade-as-share-of-gdp'},
+    {'label': 'Population', 'value': 'projected-population-by-country'}
 ]
 country_dict_list = [
                 {'label': 'All countries', 'value': 'ALL'},
