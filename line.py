@@ -1,9 +1,16 @@
 import plotly.graph_objects as go
 import numpy as np
 
-
 def create_function(x_range, var_list=[], regression_results={}):
     '''
+    This function takes in information from the regression analysis in R and
+        returns a plotly Scatter object for the curve of best fit.
+    Inputs:
+        x_range (list): a list that contains integers [xmin, xmax]
+        var_list (list): string list of variables of interest
+        regression_results (dict): dictionary from R_regression.regression_in_R
+    Ouput:
+        plotly Scatter object
     '''
 
     x = np.linspace(x_range[0], x_range[1], 100)
