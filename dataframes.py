@@ -23,7 +23,8 @@ def create_dataframes(variable_list, countries):
         csv_name = "data/" + var + ".csv"
         df_list.append(pd.read_csv(csv_name))
 
-    merged = reduce(lambda left, right: pd.merge(left,right,on=['Code','Year', 'Entity']), df_list)
+    merged = reduce(lambda left, right: pd.merge(left,right,on=['Code',
+        'Year', 'Entity']), df_list)
     merged = merged[merged["Code"].isin(countries)]
 
     return merged
