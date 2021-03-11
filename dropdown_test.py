@@ -8,7 +8,7 @@ import dash_html_components as html
 import dataframes
 import webscraping
 import util
-import R_stuff
+import R_regression
 import line
 
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
