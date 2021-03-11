@@ -393,6 +393,8 @@ def plot(var_list, countries, control):
         dataset_by_year = merged[merged["Year"] == year]
         dataset_by_year_and_cont = dataset_by_year[
             dataset_by_year["Continent"] == continent]
+        dummy_df = {"Entity":".", "Code":".", "Year":year, col_list[0]:0.0001, col_list[1]:0.0001, col_list[2]:0.001, "Continent":continent}
+        dataset_by_year_and_cont = dataset_by_year_and_cont.append(dummy_df, ignore_index = True)
 
         data_dict = {
             "x": list(dataset_by_year_and_cont[col_list[0]]),
