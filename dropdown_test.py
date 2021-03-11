@@ -65,7 +65,7 @@ variable_dict_list = [
     {'label': 'Public Health Expenditure', 'value': 'public-health-expenditure-share-gdp-owid'},
     {'label': 'GDP per capita', 'value': 'average-real-gdp-per-capita-across-countries-and-regions'},
     {'label': 'Access to Electricity', 'value': 'Share-of-the-population-with-access-to-electricity'},
-    {'label': 'Education Expenditure', 'value': 'total-government-expenditure-on-eduation-gdp'},
+    {'label': 'Education Expenditure', 'value': 'total-government-expenditure-on-education-gdp'},
     {'label': 'Out of Pocket Healthcare Expenditure', 'value': 'out-of-pocket-expenditure-per-capita-on-healthcare'},
     {'label': 'Trade', 'value': 'trade-as-share-of-gdp'}
 ]
