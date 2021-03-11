@@ -3,7 +3,7 @@ import numpy as np
 import dataframes
 import R_regression
 
-def make_x_var_list(reg_results,x_var,y_var,control=None,year=None): #countries=codes
+def write_interpretation(reg_results,x_var,y_var,control=None,year=None): #countries=codes
     '''
     Takes the reg_results dictionary returned when a linear regression is run 
     and outputs a string interpreting various attributes of the regression
