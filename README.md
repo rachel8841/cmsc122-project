@@ -5,6 +5,12 @@
 * dataframes.py
 * line.py
 * webscraping.py
+
+## Project Description
+We wanted to create an interactive web application for users to explore trends in international development over time and over one hundred countries. 
+Our application allows the user to select any combination of three development indicators from over twenty variables using data collected by the World Bank and other sources.
+We were able to create an interative simulation that allows users to observe countries' development paths over time and to observe the broader trends between various indicators, for example, the relationship between public health expenditure, child mortality, and GDP per capita.
+Additionally, users have the option to show a line of best fit on top of the graph. Our code performs statistical analysis in R and chooses from a linear, quadratic, or logarithmic model to match the data. 
     
 ## How to run
 
