@@ -22,27 +22,27 @@ def write_interpretation(reg_results,x_var,y_var,control=None,year=None): #count
     # sentence for introducing
     #{For the given year {},} 
     #{For the given countries {},}
-    intro = 'The best fitting model for the relationship between {y} versus\
-    {x}'.format(y=y_var, x=x_var)
+    intro = '''The best fitting model for the relationship between {y} versus
+    {x}'''.format(y=y_var, x=x_var)
     if control_on: 
         intro += ', with the controlled variable {ctrl},'.format(ctrl=control)
-    intro += ' is {mod}, chosen from either a linear, quadratic, or\
-    logarithmic model.'.format(mod=model_type)
+    intro += ''' is {mod}, chosen from either a linear, quadratic, or 
+    logarithmic model.'''.format(mod=model_type)
     
     # sentence for r2 FIX THIS THE PERCENTS ARE WRONG
-    r2_text = 'The model has an adjusted R-squared value of {r:.2f}. The adjusted\
-    R-squared value is a measure of relative predictive power, adjusted for\
-    the number of variables used. '.format(r=r2)
+    r2_text = '''The model has an adjusted R-squared value of {r:.2f}. The
+    adjusted R-squared value is a measure of relative predictive power, 
+    adjusted for the number of variables used. '''.format(r=r2)
     if model_type == 'base':
-        r2_text += 'Here, it means that {r:.2f}% of the variation in {y} can be\
-        explained by the variation in {x}'.format(r=r2, y=y_var, x=x_var)
+        r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can 
+        be explained by the variation in {x}'''.format(r=r2, y=y_var, x=x_var)
     elif model_type == 'log':
-        r2_text += 'Here, it means that {r:.2f}% of the variation in {y} can be\
-        explained by the variation in the logarithm of {x}'.format(r=r2,\
+        r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can 
+        be explained by the variation in the logarithm of {x}'''.format(r=r2,\
         y=y_var, x=x_var)
     elif model_type == 'quad':
-        r2_text += 'Here, it means that {r:.2f}% of the variation in {y} can be\
-        explained by the variation in the square of {x}'.format(r=r2,\
+        r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can 
+        be explained by the variation in the square of {x}'''.format(r=r2,\
         y=y_var, x=x_var)
     if control_on:
         r2_text += ' and {ctrl}'.format(ctrl=control)
@@ -60,8 +60,8 @@ def write_interpretation(reg_results,x_var,y_var,control=None,year=None): #count
         most precise, and we inflate our standard errors to account for that.'''
 
     # sentence for intercept
-    int_intro = 'The y-intercept {yint:.2f} is the expected value of {y} when {x}\
-    is zero'.format(yint=intercept['Estimate'], y=y_var, x=x_var)
+    int_intro = '''The y-intercept {yint:.2f} is the expected value of {y} when 
+    {x} is zero'''.format(yint=intercept['Estimate'], y=y_var, x=x_var)
     if control_on:
         int_intro += 'and {ctrl} is zero'.format(ctrl=control)
     int_intro += '.'
@@ -69,22 +69,22 @@ def write_interpretation(reg_results,x_var,y_var,control=None,year=None): #count
     # sentence for intercept's confidence interval
     int_ci = (intercept['Estimate'] - 1.66 * intercept['SE'], \
     intercept['Estimate'] + 1.66 * intercept['SE'])
-    int_ci_text = ' Based on the standard error, we are 90% confident that the\
-    true value of the intercept lies between ' + '{:.2f}'.format(int_ci[0]) + ' and ' + \
-    '{:.2f}'.format(int_ci[1]) + '.'
+    int_ci_text = ''' Based on the standard error, we are 90% confident that the
+     true value of the intercept lies between ''' + '{:.2f}'.format(int_ci[0]) +
+     ' and ' + '{:.2f}'.format(int_ci[1]) + '.'
     if 0 > int_ci[0] and 0 < int_ci[1]:
-        int_ci_text += ' Since zero lies in this interval, there is no\
-        statistical evidence that the y-intercept is nonzero.'
+        int_ci_text += ''' Since zero lies in this interval, there is no 
+        statistical evidence that the y-intercept is nonzero.'''
     
     # sentence for coeff (not quad)
     if model_type != 'quad':
         if model_type == 'base':
-            coeff_text = 'The coefficient {c:.2f} represents the change in {y}\
-            for a one unit increase in {x}'.format(c=x_coeff['Estimate'],\
+            coeff_text = '''The coefficient {c:.2f} represents the change in {y}
+             for a one unit increase in {x}'''.format(c=x_coeff['Estimate'],\
             y=y_var, x=x_var)
         elif model_type == 'log':
-            coeff_text = 'The coefficient {c:.2f} represents the change in {y}\
-            for a one percent increase in {x}'.format(c=x_coeff['Estimate'],\
+            coeff_text = '''The coefficient {c:.2f} represents the change in {y}
+             for a one percent increase in {x}'''.format(c=x_coeff['Estimate'],\
             y=y_var, x=x_var)
         if control_on:
             coeff_text += ', when {ctrl} is held constant'.format(ctrl=control)
@@ -93,31 +93,31 @@ def write_interpretation(reg_results,x_var,y_var,control=None,year=None): #count
         # sentence for coeff's confidence interval
         coeff_ci = (x_coeff['Estimate'] - 1.66 * x_coeff['SE'], \
           x_coeff['Estimate'] + 1.66 * x_coeff['SE'])
-        coeff_ci_text = ' We are 90% confident that the true value of this\
-        coefficient lies between ' + '{:.2f}'.format(coeff_ci[0]) + ' and ' + \
+        coeff_ci_text = ''' We are 90% confident that the true value of this 
+        coefficient lies between ''' + '{:.2f}'.format(coeff_ci[0]) + ' and ' +\
         '{:.2f}'.format(coeff_ci[1]) + '.'
         if 0 > coeff_ci[0] and 0 < coeff_ci[1]:
-            int_ci_text += ' Since zero lies in this interval, there is no\
-            statistical evidence that this coefficient is nonzero.'
+            int_ci_text += ''' Since zero lies in this interval, there is no 
+            statistical evidence that this coefficient is nonzero.'''
     
     # sentence for coeffs (quad)
     else:
-        coeff_text = 'There are no simple interpretations of the two\
-        coefficients estimated for a quadratic model, but the estimated\
-        values here are ' + '{:.2f}'.format(x_coeff['Estimate']) + \
+        coeff_text = '''There are no simple interpretations of the two 
+        coefficients estimated for a quadratic model, but the estimated 
+        values here are ''' + '{:.2f}'.format(x_coeff['Estimate']) + \
         ' on the linear term and ' + \
-        '{:.2f}'.format(reg_results["Square"]['Estimate']) + ' on the quadratic\
-        term.'
+        '{:.2f}'.format(reg_results["Square"]['Estimate']) + \
+        ' on the quadratic term.'
           
         coeff_ci = (x_coeff['Estimate'] - 1.66 * x_coeff['SE'], \
           x_coeff['Estimate'] + 1.66 * x_coeff['SE'])
         coeff_ci_2 = (reg_results["Square"]['Estimate'] - 1.66 * \
           reg_results["Square"]['SE'], reg_results["Square"]['Estimate'] + \
           1.66 * reg_results["Square"]['SE'])
-        coeff_ci_text = ' We are 90% confident that the true value of the\
-        linear coefficient lies between ' + '{:.2f}'.format(coeff_ci[0]) + \
-        ' and ' + '{:.2f}'.format(coeff_ci_1[0]) + \
-        ', and that the true value of the quadratic coefficient lies between ' \
+        coeff_ci_text = ''' We are 90% confident that the true value of the 
+        linear coefficient lies between ''' + '{:.2f}'.format(coeff_ci[0]) + \
+        ' and ' + '{:.2f}'.format(coeff_ci_1[0]) + ''', and that the true value 
+        of the quadratic coefficient lies between ''' \
         + '{:.2f}'.format(coeff_ci_2[0]) + ' and ' + \
         '{:.2f}'.format(coeff_ci_2[0]) + '.'
         #if 0 > coeff_ci[0] and 0 < coeff_ci[1]:
