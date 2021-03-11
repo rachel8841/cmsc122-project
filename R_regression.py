@@ -57,7 +57,7 @@ def make_x_var_list(x_var,control=None):
     return var_list
 
 
-def make_dataframe(x_var,y_var,control=None):
+def make_dataframe(x_var,y_var,control=None,countries=codes):
     '''
     Loads csvs and creates a dataframe with the specified variables to later
     use in R. No more than 2 x_vars.
@@ -66,11 +66,12 @@ def make_dataframe(x_var,y_var,control=None):
         x_vars: string of name of main explanatory variable of interest
         y_var: string of name of dependent variable
         control: string of name of variable to control for (None by default)
+        countries: list of country codes to include, full list by default
 
     Output: a pandas df
     '''
     x_var_list = make_x_var_list(x_var,control)
-    df = dataframes.create_dataframes(x_var_list+[y_var],codes)
+    df = dataframes.create_dataframes(x_var_list+[y_var],countries)
 
     header = ["Entity", "Code", "Year"]
     header += x_var_list + [y_var]
@@ -79,7 +80,7 @@ def make_dataframe(x_var,y_var,control=None):
     return df
 
 
-def regression_in_R(x_var,y_var,control=None,year=None):
+def regression_in_R(x_var,y_var,control=None,year=None,countries=codes):
     '''
     Uses the rpy2 package to perform data analysis in R using specified X and
     Y variables.
@@ -89,11 +90,13 @@ def regression_in_R(x_var,y_var,control=None,year=None):
         y_var: the dependent variable, as a string
         control: a covariate to control for, as a string
         year: (str) year of data that we're interesting in, None by default
+        countries: list of country codes to include, full list by default
 
-    Output: dictionary of 'Intercept', x_var, and control, each mapping to a
-    dictionary of 'Estimate', 'SEs', 't-value', and 'p-value' (ints) 
+    Output: dictionary of 'Model Spec', 'SE Type', 'Intercept', x_var, and
+    (optionally) control, each mapping to a dictionary of 'Estimate', 'SEs',
+    't-value', and 'p-value' (ints) 
     '''
-    data = make_dataframe(x_var,y_var,control)
+    data = make_dataframe(x_var,y_var,control,countries)
     if year is not None:
         data = data[data["Year"]==year]
 
@@ -104,25 +107,28 @@ def regression_in_R(x_var,y_var,control=None,year=None):
     
     r_call = '''
     do_reg = function(df,control=F){
-        df$log = log(df[,4])
+        df$exp = df[,4]^2
         if (control){
             base_model = lm(df[,6] ~ df[,4] + df[,5])
-            quad_model = lm(df[,6] ~ df[,4] + df[,4]^2 + df[,5])
-            log_model = lm(df[,6] ~ df$log + df[,5])
+            quad_model = lm(df[,6] ~ df[,4] + df$exp + df[,5])
+            log_model = lm(df[,6] ~ log(df[,4]) + df[,5])
         } else{
             base_model = lm(df[,5] ~ df[,4])
-            quad_model = lm(df[,5] ~ df[,4] + df[,4]^2)
-            log_model = lm(df[,5] ~ df$log)
+            quad_model = lm(df[,5] ~ df[,4] + df$exp)
+            log_model = lm(df[,5] ~ log(df[,4]))
         }
-        if (summary(base_model)$adj.r.squared >= summary(quad_model)$adj.r.squared){
-            if (summary(base_model)$adj.r.squared >= summary(log_model)$adj.r.squared){
+        if (summary(base_model)$adj.r.squared >= 
+            summary(quad_model)$adj.r.squared){
+            if (summary(base_model)$adj.r.squared >= 
+                summary(log_model)$adj.r.squared){
                 model = base_model
-                type = "base"
+                type = "linear"
             } else{
                 model = log_model
                 type = "log"
             }
-        } else if (summary(quad_model)$adj.r.squared >= summary(log_model)$adj.r.squared){
+        } else if (summary(quad_model)$adj.r.squared >= 
+                    summary(log_model)$adj.r.squared){
             model = quad_model
             type = "quad"
         } else{
@@ -133,11 +139,13 @@ def regression_in_R(x_var,y_var,control=None,year=None):
         p_val = unname(test$p.value)
         if (p_val > 0.1){
             SE = "normal"
-            l0 = list(as.character(summary(model)$coefficients),type,SE)
+            l0 = list(as.character(summary(model)$coefficients),type,SE,
+                as.character(summary(model)$adj.r.squared))
             return(l0)
         } else{
             SE = "robust"
-            l0 = list(as.character(summary(model,robust=T)$coefficients),type,SE)
+            l0 = list(as.character(summary(model,robust=T)$coefficients),
+                type,SE,as.character(summary(model,robust=T)$adj.r.squared))
             return(l0)
         }
     }
@@ -150,9 +158,10 @@ def regression_in_R(x_var,y_var,control=None,year=None):
     reg_results = {}
     reg_results["Model Spec"] = str(output[1]).split("\"")[1]
     reg_results["SE Type"] = str(output[2]).split("\"")[1]
+    reg_results["Adj. R-squared"] = float(str(output[3]).split("\"")[1])
     reg_results["Intercept"] = {}
     reg_results[x_var] = {}
-    if control is None and output[1]!="quad":
+    if control is None and reg_results["Model Spec"]!="quad":
         reg_results["Intercept"]["Estimate"] = values[0]
         reg_results[x_var]["Estimate"] = values[1]
         reg_results["Intercept"]["SE"] = values[2]
@@ -161,7 +170,7 @@ def regression_in_R(x_var,y_var,control=None,year=None):
         reg_results[x_var]["t-value"] = values[5]
         reg_results["Intercept"]["p-value"] = values[6]
         reg_results[x_var]["p-value"] = values[7]
-    elif output[1]!="quad":
+    elif reg_results["Model Spec"]!="quad":
         reg_results[control] = {}
         reg_results["Intercept"]["Estimate"] = values[0]
         reg_results[x_var]["Estimate"] = values[1]
