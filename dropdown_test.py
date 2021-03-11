@@ -8,6 +8,8 @@ import dash_html_components as html
 import dataframes
 import webscraping
 import util
+import R_stuff
+import line
 
 top_ten = ["USA", "GBR", "BRA", "CHN", "IND", "RUS", "JPN", "SAU", "NGA", "ZAF"]
 top_twenty = top_ten + ["DEU", "FRA", "NLD", "ARG", "MEX", "IDN", "IRN", "TUR", 
@@ -56,6 +58,7 @@ variable_dict_list = [
     {'label': 'Government Expenditure per Capita', 'value': 'total-gov-expenditure-gdp-wdi'},
     {'label': 'Happiness', 'value': 'happiness-cantril-ladder'},
     {'label': 'Homicides', 'value': 'intentional-homicides-per-100000-people'},
+    {'label': 'Savings', 'value': 'adjusted-net-savings-per-person'},
     {'label': 'Life Expectancy', 'value': 'life-expectancy'},
     {'label': 'Working Hours', 'value': 'annual-working-hours-per-worker'},
     {'label': 'Contraceptive Prevalence', 'value': 'contraceptive-prevalence-any-methods-vs-modern-methods'},
@@ -300,7 +303,7 @@ country_dict_list = [
                 {'label': 'Zimbabwe', 'value': 'ZWE'}
             ]
 
-def plot(var_list, countries):
+def plot(var_list, countries, control):
     '''
     var_list: list of strings
     var_list[0] is x variable
@@ -395,6 +398,7 @@ def plot(var_list, countries):
         }
         fig_dict["data"].append(data_dict)
 
+
     #makes the frames of the animation
     for year in years:
         frame = {"data": [], "name": str(year)}
@@ -411,14 +415,23 @@ def plot(var_list, countries):
                 "marker": {
                     "sizemode": "area",
                     "sizeref": 2*max(merged[col_list[2]]) / (15000),
-                    "size": list(dataset_by_year_and_cont[col_list[2]]),
+                    "size": [abs(item) for item in list(dataset_by_year_and_cont[col_list[2]])],
                     "color": custom_colors[continent]
                 },
                 "name": continent
             }
             frame["data"].append(data_dict)
 
+        #regression line
+        control_var = None
+        if control == 'True':
+            control_var = var_list[2]
+
+        x_range = [merged[col_list[0]].min(), merged[col_list[0]].max()]
+
+        frame["data"].append(line.create_function(x_range, var_list, R_stuff.regression_in_R(var_list[0], var_list[1], year, control_var)))
         fig_dict["frames"].append(frame)
+
         slider_step = {"args": [
             [year],
             {"frame": {"duration": 300},
@@ -477,10 +490,17 @@ def setup():
             value='annual-co2-emissions-per-country'
         ),
         dcc.Dropdown(
-            id = 'country-dropdown',
+            id='country-dropdown',
             options=country_dict_list,
             value=top_twenty,
             multi=True
+        ),
+        dcc.Checklist(
+            id='control-check',
+            options=[
+                {'label': 'Use third variable as control', 'value': 'True'}
+            ],
+            value = []
         ),
         html.H4("Description of variables:"),
         html.Br(),
@@ -489,34 +509,42 @@ def setup():
         html.Div(id='y-description'),
         html.Br(),
         html.Div(id='bub-description'),
+        html.H4("Statistics summary:"),
+        html.Br(),
+        html.Div(id='stat-summary'),
         dcc.Graph(id='graph-court'),
     ])
     @app.callback(
         [dash.dependencies.Output('graph-court', 'figure'), 
             dash.dependencies.Output(component_id='x-description', component_property='children'),
             dash.dependencies.Output(component_id='y-description', component_property='children'),
-            dash.dependencies.Output(component_id='bub-description', component_property='children')],
+            dash.dependencies.Output(component_id='bub-description', component_property='children'),
+            dash.dependencies.Output(component_id='stat-summary', component_property='children')],
         [dash.dependencies.Input('xvar-dropdown', 'value'), 
             dash.dependencies.Input('yvar-dropdown', 'value'), 
             dash.dependencies.Input('bubblevar-dropdown', 'value'), 
-            dash.dependencies.Input('country-dropdown', 'value')]
+            dash.dependencies.Input('country-dropdown', 'value'),
+            dash.dependencies.Input('control-check', 'value')
+            ]
         )
     
     #creates graph based on the selections on the drop down menus
-    def create_graph(xval, yval, bubval, countries):
+    def create_graph(xval, yval, bubval, countries, control):
         if 'ALL' in countries:
             countries = codes
         var_list = [xval, yval, bubval]
 
-        fig, col_list = plot(var_list, countries)
+        fig, col_list = plot(var_list, countries, control)
+
         descriptions = webscraping.scrape(var_list)
 
-        label_names = [util.clean_column_name(item) for item in col_list]
+        label_names = [dataframes.clean_column_name(item) for item in col_list]
         x_desc = label_names[0] + ": " + descriptions[0]
         y_desc = label_names[1] + ": " + descriptions[1]
         bub_desc = label_names[2] + ": " + descriptions[2]
+        stat_summary = ""
 
-        return (fig, x_desc, y_desc, bub_desc)
+        return (fig, x_desc, y_desc, bub_desc, stat_summary)
 
     if __name__ == '__main__':
         app.run_server(debug=True)
