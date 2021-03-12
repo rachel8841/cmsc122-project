@@ -8,6 +8,7 @@ import dash_html_components as html
 import dataframes
 import webscraping
 import R_regression
+import R_interpret
 import line
 
 '''
@@ -602,7 +603,13 @@ def setup():
         x_desc = label_names[0] + ": " + descriptions[0]
         y_desc = label_names[1] + ": " + descriptions[1]
         bub_desc = label_names[2] + ": " + descriptions[2]
-        stat_summary = ""
+
+        control_var = None
+        if control == "True":
+            control_var = var_list[2]
+        reg_results = R_regression.regression_in_R(var_list[0], 
+            var_list[1], control_var, countries)
+        stat_summary = R_interpret.write_interpretation(reg_results, var_list[0], var_list[1])
 
         return (fig, x_desc, y_desc, bub_desc, stat_summary)
 

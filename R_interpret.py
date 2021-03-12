@@ -1,3 +1,27 @@
+name_dict = {'fixed-broadband-subscriptions-per-100-people': 'Broadband Subscriptions',
+    'child-mortality': 'Child Mortality',
+    'annual-co2-emissions-per-country': 'CO2 Emissions',
+    'dalys-rate-from-all-causes': 'Disability Adjusted Life Years',
+    'age-dependency-ratio-of-working-age-population': 'Age Dependency Ratio',
+    'deaths-from-alcohol-and-drug-use-disorders': 'Deaths from Drugs and Alcohol',
+    'expected-years-of-schooling': 'Years of Expected Schooling',
+    'oecd-female-labour-force-participation-rate-15-64': 'Female Labor Force Participation Rate',
+    'total-gov-expenditure-gdp-wdi': 'Government Expenditure per Capita',
+    'happiness-cantril-ladder': 'Happiness',
+    'intentional-homicides-per-100000-people': 'Homicides',
+    'adjusted-net-savings-per-person': 'Savings',
+    'life-expectancy': 'Life Expectancy',
+    'annual-working-hours-per-worker': 'Working Hours',
+    'contraceptive-prevalence-any-methods-vs-modern-methods': 'Contraceptive Prevalence',
+    'military-expenditure-as-share-of-gdp': 'Military Expenditure',
+    'public-health-expenditure-share-gdp-owid': 'Public Health Expenditure',
+    'average-real-gdp-per-capita-across-countries-and-regions': 'GDP per capita',
+    'Share-of-the-population-with-access-to-electricity': 'Access to Electricity',
+    'total-government-expenditure-on-education-gdp': 'Education Expenditure',
+    'out-of-pocket-expenditure-per-capita-on-healthcare': 'Out of Pocket Healthcare Expenditure',
+    'trade-as-share-of-gdp': 'Trade',
+    'projected-population-by-country': 'Population'}
+
 def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countries=codes
     '''
     Takes the reg_results dictionary returned when a linear regression is run 
@@ -23,15 +47,17 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     # sentence for introducing model
     #{For the given year {},} 
     #{For the given countries {},}
-    intro = '''The best fitting model for the relationship between {y} versus \
-    {x}'''.format(y=yvar, x=xvar)
+    intro = '''
+    The best fitting model for the relationship between {y} versus\
+    {x}'''.format(y=name_dict[yvar], x=name_dict[xvar])
     if control_on: 
         intro += ', with the controlled variable {ctrl},'.format(ctrl=control)
     intro += ''' is a {mod} model, chosen from either a linear, quadratic, or \
     logarithmic model.'''.format(mod=model_type)
     
     # sentence for r2
-    r2_text = ''' The model has an adjusted R-squared value of {r:.4f}. The\
+    r2_text = '''\
+    The model has an adjusted R-squared value of {r:.4f}. The\
     adjusted R-squared value is a measure of relative predictive power, \
     adjusted for the number of variables used. '''.format(r=r2)
     r2_per = 100 * r2
@@ -41,11 +67,11 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     elif model_type == 'log':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can \
         be explained by the variation in the logarithm of {x}
-        '''.format(r=r2_per, y=yvar, x=xvar)
+        '''.format(r=r2_per, y=name_dict[yvar], x=name_dict[xvar])
     elif model_type == 'quad':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can \
         be explained by the variation in the square of {x}'''.format(r=r2_per,\
-        y=yvar, x=xvar)
+        y=name_dict[yvar], x=name_dict[xvar])
     if control_on:
         r2_text += ' and {ctrl}'.format(ctrl=control)
     r2_text += '.'
@@ -63,7 +89,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
 
     # sentence for intercept
     int_intro = ''' The y-intercept {yint:.2f} is the expected value of {y} \
-    when {x} is zero'''.format(yint=intercept['Estimate'], y=yvar, x=xvar)
+    when {x} is zero'''.format(yint=intercept['Estimate'], y=name_dict[yvar], x=name_dict[xvar])
     if control_on:
         int_intro += 'and {ctrl} is zero'.format(ctrl=control)
     int_intro += '.'
@@ -83,11 +109,11 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
         if model_type == 'base':
             coeff_text = ''' The coefficient {c:.2f} represents the change in \
             {y} for a one unit increase in {x}
-            '''.format(c=x_coeff['Estimate'],y=yvar,x=xvar)
+            '''.format(c=x_coeff['Estimate'],y=name_dict[yvar], x=name_dict[xvar])
         elif model_type == 'log':
             coeff_text = ''' The coefficient {c:.2f} represents the change in \
             {y} for a one percent increase in {x}
-            '''.format(c=x_coeff['Estimate'],y=yvar,x=xvar)
+            '''.format(c=x_coeff['Estimate'],y=name_dict[yvar], x=name_dict[xvar])
         if control_on:
             coeff_text += ', when {ctrl} is held constant'.format(ctrl=control)
         coeff_text += '.'
