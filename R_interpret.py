@@ -123,10 +123,10 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
           1.66 * reg_results["Square"]['SE'])
         coeff_ci_text = ''' We are 90% confident that the true value of the \
         linear coefficient lies between ''' + '{:.2f}'.format(coeff_ci[0]) + \
-        ' and ' + '{:.2f}'.format(coeff_ci_1[0]) + ''', and that the true \
+        ' and ' + '{:.2f}'.format(coeff_ci[1]) + ''', and that the true \
         value of the quadratic coefficient lies between ''' \
         + '{:.2f}'.format(coeff_ci_2[0]) + ' and ' + \
-        '{:.2f}'.format(coeff_ci_2[0]) + '.'
+        '{:.2f}'.format(coeff_ci_2[1]) + '.'
         #if 0 > coeff_ci[0] and 0 < coeff_ci[1]:
         #    int_ci_text += ' Since zero lies in the first interval, there is\
         #    no statistical evidence that this coefficient is nonzero.'
