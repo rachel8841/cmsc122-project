@@ -328,6 +328,7 @@ country_dict_list = [
 def plot(var_list, countries, control):
     '''
     Plots the graph
+
     Inputs:
         var_list: list of strings
             var_list[0] is x variable
@@ -372,7 +373,8 @@ def plot(var_list, countries, control):
                 {
                     "args": [None, {"frame": {"duration": 500, "redraw": False},
                                     "fromcurrent": True, 
-                                    "transition": {"duration": 300, "easing": "quadratic-in-out"}}],
+                                    "transition": {"duration": 300, 
+                                    "easing": "quadratic-in-out"}}],
                     "label": "Play",
                     "method": "animate"
                 },
@@ -567,10 +569,14 @@ def setup():
     ])
     @app.callback(
         [dash.dependencies.Output('graph-court', 'figure'), 
-            dash.dependencies.Output(component_id='x-description', component_property='children'),
-            dash.dependencies.Output(component_id='y-description', component_property='children'),
-            dash.dependencies.Output(component_id='bub-description', component_property='children'),
-            dash.dependencies.Output(component_id='stat-summary', component_property='children')],
+            dash.dependencies.Output(component_id='x-description', 
+            component_property='children'),
+            dash.dependencies.Output(component_id='y-description', 
+            component_property='children'),
+            dash.dependencies.Output(component_id='bub-description', 
+            component_property='children'),
+            dash.dependencies.Output(component_id='stat-summary', 
+            component_property='children')],
         [dash.dependencies.Input('xvar-dropdown', 'value'), 
             dash.dependencies.Input('yvar-dropdown', 'value'), 
             dash.dependencies.Input('bubblevar-dropdown', 'value'), 
@@ -583,6 +589,7 @@ def setup():
     def create_graph(xval, yval, bubval, countries, control):
         '''
         Creates outputs based on the input from the dropdowns and checkboxes
+
         Inputs:
             xval, yval, bubval (strings)
             countries (list)
@@ -609,7 +616,8 @@ def setup():
             control_var = var_list[2]
         reg_results = R_regression.regression_in_R(var_list[0], 
             var_list[1], control_var, countries)
-        stat_summary = R_interpret.write_interpretation(reg_results, var_list[0], var_list[1])
+        stat_summary = R_interpret.write_interpretation(reg_results, var_list[0], 
+            var_list[1], control_var)
 
         return (fig, x_desc, y_desc, bub_desc, stat_summary)
 

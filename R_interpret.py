@@ -44,14 +44,11 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
         control_on = True
         control_dict = reg_results['control']
     
-    # sentence for introducing model
-    #{For the given year {},} 
-    #{For the given countries {},}
     intro = '''
     The best fitting model for the relationship between {y} versus\
     {x}'''.format(y=name_dict[yvar], x=name_dict[xvar])
     if control_on: 
-        intro += ', with the controlled variable {ctrl},'.format(ctrl=control)
+        intro += ', with the controlled variable {ctrl},'.format(ctrl=name_dict[control])
     intro += ''' is a {mod} model, chosen from either a linear, quadratic, or \
     logarithmic model.'''.format(mod=model_type)
     
@@ -66,14 +63,14 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
         be explained by the variation in {x}'''.format(r=r2_per,y=yvar,x=xvar)
     elif model_type == 'log':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can \
-        be explained by the variation in the logarithm of {x}
-        '''.format(r=r2_per, y=name_dict[yvar], x=name_dict[xvar])
+        be explained by the variation in the logarithm of {x}'''.\
+        format(r=r2_per, y=name_dict[yvar], x=name_dict[xvar])
     elif model_type == 'quad':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can \
         be explained by the variation in the square of {x}'''.format(r=r2_per,\
         y=name_dict[yvar], x=name_dict[xvar])
     if control_on:
-        r2_text += ' and {ctrl}'.format(ctrl=control)
+        r2_text += ' and {ctrl}'.format(ctrl=name_dict[control])
     r2_text += '.'
     
     # sentence for estimations
@@ -83,7 +80,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     if SE_type == 'robust':
         est_text += ''' \
         The standard errors here are robust to account for \
-        heteroscedasticity, so they are larger than normal standard errors. \
+        heteroskedasticity, so they are larger than normal standard errors. \
         Under these conditions, our current method of regression is not the \
         most precise, and we inflate our standard errors to account for it.'''
 
@@ -91,7 +88,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     int_intro = ''' The y-intercept {yint:.2f} is the expected value of {y} \
     when {x} is zero'''.format(yint=intercept['Estimate'], y=name_dict[yvar], x=name_dict[xvar])
     if control_on:
-        int_intro += 'and {ctrl} is zero'.format(ctrl=control)
+        int_intro += 'and {ctrl} is zero'.format(ctrl=name_dict[control])
     int_intro += '.'
     
     # sentence for intercept's confidence interval
@@ -108,14 +105,14 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     if model_type != 'quad':
         if model_type == 'base':
             coeff_text = ''' The coefficient {c:.2f} represents the change in \
-            {y} for a one unit increase in {x}
-            '''.format(c=x_coeff['Estimate'],y=name_dict[yvar], x=name_dict[xvar])
+            {y} for a one unit increase in {x}'''.\
+                format(c=x_coeff['Estimate'],y=name_dict[yvar], x=name_dict[xvar])
         elif model_type == 'log':
             coeff_text = ''' The coefficient {c:.2f} represents the change in \
-            {y} for a one percent increase in {x}
-            '''.format(c=x_coeff['Estimate'],y=name_dict[yvar], x=name_dict[xvar])
+            {y} for a one percent increase in {x}'''.\
+                format(c=x_coeff['Estimate'],y=name_dict[yvar], x=name_dict[xvar])
         if control_on:
-            coeff_text += ', when {ctrl} is held constant'.format(ctrl=control)
+            coeff_text += ', when {ctrl} is held constant'.format(ctrl=name_dict[control])
         coeff_text += '.'
         
         # sentence for coeff's confidence interval
