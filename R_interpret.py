@@ -1,8 +1,3 @@
-import pandas as pd
-import numpy as np
-import dataframes
-import R_regression
-
 def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countries=codes
     '''
     Takes the reg_results dictionary returned when a linear regression is run 
@@ -39,7 +34,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     r2_text = ''' The model has an adjusted R-squared value of {r:.4f}. The\
     adjusted R-squared value is a measure of relative predictive power, \
     adjusted for the number of variables used. '''.format(r=r2)
-    r2_per = 10 * r2
+    r2_per = 100 * r2
     if model_type == 'base':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can \
         be explained by the variation in {x}'''.format(r=r2_per,y=yvar,x=xvar)
