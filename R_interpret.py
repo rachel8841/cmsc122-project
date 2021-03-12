@@ -40,9 +40,8 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     x_coeff = reg_results[xvar]
 
     control_on = False
-    if 'control' in reg_results:
+    if control != None:
         control_on = True
-        control_dict = reg_results['control']
     
     # sentence for introducing model
     intro = '''
