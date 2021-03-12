@@ -45,8 +45,6 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
         control_dict = reg_results['control']
     
     # sentence for introducing model
-    #{For the given year {},} 
-    #{For the given countries {},}
     intro = '''
     The best fitting model for the relationship between {y} versus\
     {x}'''.format(y=name_dict[yvar], x=name_dict[xvar])
@@ -55,7 +53,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
     intro += ''' is a {mod} model, chosen from either a linear, quadratic, or \
     logarithmic model.'''.format(mod=model_type)
     
-    # sentence for r2
+    # sentence for r squared
     r2_text = '''\
     The model has an adjusted R-squared value of {r:.4f}. The\
     adjusted R-squared value is a measure of relative predictive power, \
@@ -104,7 +102,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
         int_ci_text += ''' Since zero lies in this interval, there is no \
         statistical evidence that the y-intercept is nonzero.'''
     
-    # sentence for coeff (not quad)
+    # sentence for coefficient (not quad)
     if model_type != 'quad':
         if model_type == 'base':
             coeff_text = ''' The coefficient {c:.2f} represents the change in \
@@ -118,7 +116,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
             coeff_text += ', when {ctrl} is held constant'.format(ctrl=control)
         coeff_text += '.'
         
-        # sentence for coeff's confidence interval
+        # sentence for coefficient's confidence interval
         coeff_ci = (x_coeff['Estimate'] - 1.66 * x_coeff['SE'], \
           x_coeff['Estimate'] + 1.66 * x_coeff['SE'])
         coeff_ci_text = ''' We are 90% confident that the true value of this \
@@ -128,7 +126,7 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
             int_ci_text += ''' Since zero lies in this interval, there is no \
             statistical evidence that this coefficient is nonzero.'''
     
-    # sentence for coeffs (quad)
+    # sentence for coefficients (quad)
     else:
         coeff_text = ''' There are no simple interpretations of the two \
         coefficients estimated for a quadratic model, but the estimated \
@@ -148,15 +146,8 @@ def write_interpretation(reg_results,xvar,yvar,control=None,year=None): #countri
         value of the quadratic coefficient lies between ''' \
         + '{:.2f}'.format(coeff_ci_2[0]) + ' and ' + \
         '{:.2f}'.format(coeff_ci_2[1]) + '.'
-        #if 0 > coeff_ci[0] and 0 < coeff_ci[1]:
-        #    int_ci_text += ' Since zero lies in the first interval, there is\
-        #    no statistical evidence that this coefficient is nonzero.'
     
-    #output = intro + '\n' + r2_text + '\n' + est_text + '\n' + int_intro + \
-    #  int_ci_text + '\n' + coeff_text + coeff_ci_text
     output = intro + r2_text + est_text + int_intro + \
       int_ci_text + coeff_text + coeff_ci_text
-    #output = ''.join([intro, r2_text, est_text, int_intro, int_ci_text,
-    #  coeff_text, coeff_ci_text])
     
     return output
