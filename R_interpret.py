@@ -9,6 +9,12 @@ def write_interpretation(reg_results,x_var,y_var,control=None,year=None): #count
     and outputs a string interpreting various attributes of the regression
     '''
     model_type = reg_results["Model Spec"] # base, quad, or log
+    if model_type == 'base':
+        model_type == 'linear'
+    elif model_type == 'log':
+        model_type == 'logarithmic'
+    else:
+        model_type == 'quadratic'
     SE_type = reg_results["SE Type"] # normal, robust
     r2 = reg_results["Adj. R-squared"]
     intercept = reg_results["Intercept"]
@@ -19,30 +25,31 @@ def write_interpretation(reg_results,x_var,y_var,control=None,year=None): #count
         control_on = True
         control_dict = reg_results['control']
     
-    # sentence for introducing
+    # sentence for introducing model
     #{For the given year {},} 
     #{For the given countries {},}
     intro = '''The best fitting model for the relationship between {y} versus
     {x}'''.format(y=y_var, x=x_var)
     if control_on: 
         intro += ', with the controlled variable {ctrl},'.format(ctrl=control)
-    intro += ''' is {mod}, chosen from either a linear, quadratic, or 
+    intro += ''' is a {mod} model, chosen from either a linear, quadratic, or 
     logarithmic model.'''.format(mod=model_type)
     
-    # sentence for r2 FIX THIS THE PERCENTS ARE WRONG
-    r2_text = '''The model has an adjusted R-squared value of {r:.2f}. The
+    # sentence for r2
+    r2_text = '''The model has an adjusted R-squared value of {r:.4f}. The
     adjusted R-squared value is a measure of relative predictive power, 
     adjusted for the number of variables used. '''.format(r=r2)
+    r2_per = 10 * r2
     if model_type == 'base':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can 
-        be explained by the variation in {x}'''.format(r=r2, y=y_var, x=x_var)
+        be explained by the variation in {x}'''.format(r=r2_per,y=y_var,x=x_var)
     elif model_type == 'log':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can 
-        be explained by the variation in the logarithm of {x}'''.format(r=r2,\
-        y=y_var, x=x_var)
+        be explained by the variation in the logarithm of {x}
+        '''.format(r=r2_per, y=y_var, x=x_var)
     elif model_type == 'quad':
         r2_text += '''Here, it means that {r:.2f}% of the variation in {y} can 
-        be explained by the variation in the square of {x}'''.format(r=r2,\
+        be explained by the variation in the square of {x}'''.format(r=r2_per,\
         y=y_var, x=x_var)
     if control_on:
         r2_text += ' and {ctrl}'.format(ctrl=control)
