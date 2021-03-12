@@ -5,6 +5,7 @@
 * dataframes.py
 * line.py
 * webscraping.py
+* Be sure to install rpy2 and plotly before running!
 
 ## Project Description
 We wanted to create an interactive web application for users to explore trends in international development over time and over one hundred countries. 
