@@ -423,7 +423,7 @@ def plot(var_list, countries, control):
         var_list[1], control_var, countries)
     regression_range = [merged[col_list[0]].min(), merged[col_list[0]].max()]
     regression_dict = line.create_function(regression_range, var_list,
-        regression_results)
+        regression_results, control_var)
 
     #makes the first frame of data for the first year
     year = years[0]
